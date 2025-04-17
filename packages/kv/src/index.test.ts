@@ -1,4 +1,4 @@
-import defaultKv, { kv, VercelKV, createClient } from '.';
+import defaultKv, { kv, KhulnasoftKV, createClient } from '.';
 
 let scanReturnValues: [string, string[]][] = [['0', []]];
 jest.mock('@upstash/redis', () => ({
@@ -7,8 +7,8 @@ jest.mock('@upstash/redis', () => ({
     scan: jest
       .fn()
       .mockImplementation(() => Promise.resolve(scanReturnValues.shift())),
-    // eslint-disable-next-line jest/unbound-method -- [@vercel/style-guide@5 migration]
-    scanIterator: VercelKV.prototype.scanIterator,
+    // eslint-disable-next-line jest/unbound-method -- [@khulnasoft/style-guide@5 migration]
+    scanIterator: KhulnasoftKV.prototype.scanIterator,
   })),
 }));
 
@@ -21,7 +21,7 @@ describe('@khulnasoft/kv', () => {
   describe('kv export', () => {
     it('exports "kv" client', async () => {
       process.env.KV_REST_API_URL =
-        'https://foobar-6739.redis.vercel-storage.com';
+        'https://foobar-6739.redis.khulnasoft-storage.com';
       process.env.KV_REST_API_TOKEN = 'tok_foobar';
 
       expect(await kv.get('foo')).toEqual('bar');
@@ -32,7 +32,7 @@ describe('@khulnasoft/kv', () => {
 
     it('exports default legacy client', async () => {
       process.env.KV_REST_API_URL =
-        'https://foobar-6739.redis.vercel-storage.com';
+        'https://foobar-6739.redis.khulnasoft-storage.com';
       process.env.KV_REST_API_TOKEN = 'tok_foobar';
 
       expect(await defaultKv.get('foo')).toEqual('bar');
@@ -45,7 +45,7 @@ describe('@khulnasoft/kv', () => {
       const kvModule = await import('.').then((m) => m.default);
 
       process.env.KV_REST_API_URL =
-        'https://foobar-6739.redis.vercel-storage.com';
+        'https://foobar-6739.redis.khulnasoft-storage.com';
       process.env.KV_REST_API_TOKEN = 'tok_foobar';
 
       expect(await kvModule.get('foo')).toEqual('bar');
@@ -65,7 +65,7 @@ describe('@khulnasoft/kv', () => {
 
   describe('scanIterator', () => {
     it('terminates iteration for trivial case', async () => {
-      const client = new VercelKV({ url: 'foobar', token: 'foobar' });
+      const client = new KhulnasoftKV({ url: 'foobar', token: 'foobar' });
       const iterator = client.scanIterator();
 
       expect(iterator[Symbol.asyncIterator]).toBeTruthy();

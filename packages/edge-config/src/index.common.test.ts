@@ -14,7 +14,7 @@ const sdkVersion = typeof pkgVersion === 'string' ? pkgVersion : '';
 describe('test conditions', () => {
   it('should have an env var called EDGE_CONFIG', () => {
     expect(process.env.EDGE_CONFIG).toEqual(
-      'https://edge-config.vercel.com/ecfg-1?token=token-1',
+      'https://edge-config.khulnasoft.com/ecfg-1?token=token-1',
     );
   });
 });
@@ -29,7 +29,7 @@ describe('parseConnectionString', () => {
   it('should return null when the given Connection String has no token', () => {
     expect(
       pkg.parseConnectionString(
-        'https://edge-config.vercel.com/ecfg_cljia81u2q1gappdgptj881dwwtc',
+        'https://edge-config.khulnasoft.com/ecfg_cljia81u2q1gappdgptj881dwwtc',
       ),
     ).toBeNull();
   });
@@ -37,14 +37,14 @@ describe('parseConnectionString', () => {
   it('should return the id and token when a valid internal Connection String is given', () => {
     expect(
       pkg.parseConnectionString(
-        'https://edge-config.vercel.com/ecfg_cljia81u2q1gappdgptj881dwwtc?token=00000000-0000-0000-0000-000000000000',
+        'https://edge-config.khulnasoft.com/ecfg_cljia81u2q1gappdgptj881dwwtc?token=00000000-0000-0000-0000-000000000000',
       ),
     ).toEqual({
       baseUrl:
-        'https://edge-config.vercel.com/ecfg_cljia81u2q1gappdgptj881dwwtc',
+        'https://edge-config.khulnasoft.com/ecfg_cljia81u2q1gappdgptj881dwwtc',
       id: 'ecfg_cljia81u2q1gappdgptj881dwwtc',
       token: '00000000-0000-0000-0000-000000000000',
-      type: 'vercel',
+      type: 'khulnasoft',
       version: '1',
     });
   });
@@ -84,10 +84,10 @@ describe('parseConnectionString', () => {
       ),
     ).toEqual({
       baseUrl:
-        'https://edge-config.vercel.com/ecfg_cljia81u2q1gappdgptj881dwwtc',
+        'https://edge-config.khulnasoft.com/ecfg_cljia81u2q1gappdgptj881dwwtc',
       id: 'ecfg_cljia81u2q1gappdgptj881dwwtc',
       token: '00000000-0000-0000-0000-000000000000',
-      type: 'vercel',
+      type: 'khulnasoft',
       version: '1',
     });
   });
@@ -112,8 +112,8 @@ describe('parseConnectionString', () => {
 
 describe('when running without lambda layer or via edge function', () => {
   const modifiedConnectionString =
-    'https://edge-config.vercel.com/ecfg-2?token=token-2';
-  const modifiedBaseUrl = 'https://edge-config.vercel.com/ecfg-2';
+    'https://edge-config.khulnasoft.com/ecfg-2?token=token-2';
+  const modifiedBaseUrl = 'https://edge-config.khulnasoft.com/ecfg-2';
   let edgeConfig: EdgeConfigClient;
 
   beforeEach(() => {
@@ -147,7 +147,7 @@ describe('when running without lambda layer or via edge function', () => {
           {
             headers: new Headers({
               Authorization: 'Bearer token-2',
-              'x-edge-config-vercel-env': 'test',
+              'x-edge-config-khulnasoft-env': 'test',
               'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
               'cache-control': 'stale-if-error=604800',
             }),
@@ -178,7 +178,7 @@ describe('when running without lambda layer or via edge function', () => {
             method: 'HEAD',
             headers: new Headers({
               Authorization: 'Bearer token-2',
-              'x-edge-config-vercel-env': 'test',
+              'x-edge-config-khulnasoft-env': 'test',
               'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
               'cache-control': 'stale-if-error=604800',
             }),
@@ -208,7 +208,7 @@ describe('when running without lambda layer or via edge function', () => {
           {
             headers: new Headers({
               Authorization: 'Bearer token-2',
-              'x-edge-config-vercel-env': 'test',
+              'x-edge-config-khulnasoft-env': 'test',
               'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
               'cache-control': 'stale-if-error=604800',
             }),
@@ -222,8 +222,8 @@ describe('when running without lambda layer or via edge function', () => {
 
 describe('etags and If-None-Match', () => {
   const modifiedConnectionString =
-    'https://edge-config.vercel.com/ecfg-2?token=token-2';
-  const modifiedBaseUrl = 'https://edge-config.vercel.com/ecfg-2';
+    'https://edge-config.khulnasoft.com/ecfg-2?token=token-2';
+  const modifiedBaseUrl = 'https://edge-config.khulnasoft.com/ecfg-2';
   let edgeConfig: EdgeConfigClient;
 
   beforeEach(() => {
@@ -257,7 +257,7 @@ describe('etags and If-None-Match', () => {
         {
           headers: new Headers({
             Authorization: 'Bearer token-2',
-            'x-edge-config-vercel-env': 'test',
+            'x-edge-config-khulnasoft-env': 'test',
             'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
             'cache-control': 'stale-if-error=604800',
           }),
@@ -269,7 +269,7 @@ describe('etags and If-None-Match', () => {
         {
           headers: new Headers({
             Authorization: 'Bearer token-2',
-            'x-edge-config-vercel-env': 'test',
+            'x-edge-config-khulnasoft-env': 'test',
             'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
             'cache-control': 'stale-if-error=604800',
             'If-None-Match': 'a',
@@ -283,8 +283,8 @@ describe('etags and If-None-Match', () => {
 
 describe('stale-if-error semantics', () => {
   const modifiedConnectionString =
-    'https://edge-config.vercel.com/ecfg-2?token=token-2';
-  const modifiedBaseUrl = 'https://edge-config.vercel.com/ecfg-2';
+    'https://edge-config.khulnasoft.com/ecfg-2?token=token-2';
+  const modifiedBaseUrl = 'https://edge-config.khulnasoft.com/ecfg-2';
   let edgeConfig: EdgeConfigClient;
 
   beforeEach(() => {
@@ -313,7 +313,7 @@ describe('stale-if-error semantics', () => {
         {
           headers: new Headers({
             Authorization: 'Bearer token-2',
-            'x-edge-config-vercel-env': 'test',
+            'x-edge-config-khulnasoft-env': 'test',
             'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
             'cache-control': 'stale-if-error=604800',
           }),
@@ -325,7 +325,7 @@ describe('stale-if-error semantics', () => {
         {
           headers: new Headers({
             Authorization: 'Bearer token-2',
-            'x-edge-config-vercel-env': 'test',
+            'x-edge-config-khulnasoft-env': 'test',
             'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
             'cache-control': 'stale-if-error=604800',
             'If-None-Match': 'a',
@@ -356,7 +356,7 @@ describe('stale-if-error semantics', () => {
         {
           headers: new Headers({
             Authorization: 'Bearer token-2',
-            'x-edge-config-vercel-env': 'test',
+            'x-edge-config-khulnasoft-env': 'test',
             'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
             'cache-control': 'stale-if-error=604800',
           }),
@@ -368,7 +368,7 @@ describe('stale-if-error semantics', () => {
         {
           headers: new Headers({
             Authorization: 'Bearer token-2',
-            'x-edge-config-vercel-env': 'test',
+            'x-edge-config-khulnasoft-env': 'test',
             'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
             'cache-control': 'stale-if-error=604800',
             'If-None-Match': 'a',
@@ -421,7 +421,7 @@ describe('connectionStrings', () => {
             {
               headers: new Headers({
                 Authorization: 'Bearer token-2',
-                'x-edge-config-vercel-env': 'test',
+                'x-edge-config-khulnasoft-env': 'test',
                 'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
                 'cache-control': 'stale-if-error=604800',
               }),
@@ -449,7 +449,7 @@ describe('in-memory cache with swr behaviour', () => {
     fetchMock.mockResponse(JSON.stringify({ foo: 'bar' }));
 
     const edgeConfig = pkg.createClient(
-      'https://edge-config.vercel.com/ecfg-2?token=token-2',
+      'https://edge-config.khulnasoft.com/ecfg-2?token=token-2',
     );
     expect(await edgeConfig.get('foo')).toBe('bar');
 

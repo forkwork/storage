@@ -5,7 +5,7 @@ import type { IncomingMessage } from 'node:http';
 // the `undici` module will be replaced with https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
 // for browser contexts. See ./undici-browser.js and ./package.json
 import { fetch } from 'undici';
-import type { BlobCommandOptions } from './helpers';
+import type { BlobCommandOptions, WithUploadProgress } from './helpers';
 import { BlobError, getTokenFromOptionsOrEnv } from './helpers';
 import { createPutMethod } from './put';
 import type { PutBlobResult } from './put-helpers';
@@ -42,7 +42,9 @@ export interface ClientTokenOptions {
 }
 
 // shared interface for put and upload
-interface ClientCommonPutOptions extends ClientCommonCreateBlobOptions {
+interface ClientCommonPutOptions
+  extends ClientCommonCreateBlobOptions,
+    WithUploadProgress {
   /**
    * Whether to use multipart upload. Use this when uploading large files. It will split the file into multiple parts, upload them in parallel and retry failed parts.
    */
@@ -53,13 +55,7 @@ function createPutExtraChecks<
   TOptions extends ClientTokenOptions & ClientCommonCreateBlobOptions,
 >(methodName: string) {
   return function extraChecks(options: TOptions) {
-    if (typeof window === 'undefined') {
-      throw new BlobError(
-        `${methodName} must be called from a client environment`,
-      );
-    }
-
-    if (!options.token.startsWith('vercel_blob_client_')) {
+    if (!options.token.startsWith('khulnasoft_blob_client_')) {
       throw new BlobError(`${methodName} must be called with a client token`);
     }
 
@@ -67,10 +63,12 @@ function createPutExtraChecks<
       // @ts-expect-error -- Runtime check for DX.
       options.addRandomSuffix !== undefined ||
       // @ts-expect-error -- Runtime check for DX.
+      options.allowOverwrite !== undefined ||
+      // @ts-expect-error -- Runtime check for DX.
       options.cacheControlMaxAge !== undefined
     ) {
       throw new BlobError(
-        `${methodName} doesn't allow addRandomSuffix and cacheControlMaxAge. Configure these options at the server side when generating client tokens.`,
+        `${methodName} doesn't allow \`addRandomSuffix\`, \`cacheControlMaxAge\` or \`allowOverwrite\`. Configure these options at the server side when generating client tokens.`,
       );
     }
   };
@@ -86,10 +84,10 @@ export const put = createPutMethod<ClientPutCommandOptions>({
   extraChecks: createPutExtraChecks('client/`put`'),
 });
 
-// vercelBlob. createMultipartUpload()
-// vercelBlob. uploadPart()
-// vercelBlob. completeMultipartUpload()
-// vercelBlob. createMultipartUploaded()
+// khulnasoftBlob. createMultipartUpload()
+// khulnasoftBlob. uploadPart()
+// khulnasoftBlob. completeMultipartUpload()
+// khulnasoftBlob. createMultipartUploader()
 
 export type ClientCreateMultipartUploadCommandOptions =
   ClientCommonCreateBlobOptions & ClientTokenOptions;
@@ -110,7 +108,8 @@ export const createMultipartUploader =
 
 type ClientMultipartUploadCommandOptions = ClientCommonCreateBlobOptions &
   ClientTokenOptions &
-  CommonMultipartUploadOptions;
+  CommonMultipartUploadOptions &
+  WithUploadProgress;
 
 export const uploadPart =
   createUploadPartMethod<ClientMultipartUploadCommandOptions>({
@@ -149,9 +148,9 @@ export interface CommonUploadOptions {
 export type UploadOptions = ClientCommonPutOptions & CommonUploadOptions;
 /**
  * Uploads a blob into your store from the client.
- * Detailed documentation can be found here: https://vercel.com/docs/storage/vercel-blob/using-blob-sdk#client-uploads
+ * Detailed documentation can be found here: https://khulnasoft.com/docs/khulnasoft-blob/using-blob-sdk#client-uploads
  *
- * If you want to upload from your server instead, check out the documentation for the put operation: https://vercel.com/docs/storage/vercel-blob/using-blob-sdk#upload-a-blob
+ * If you want to upload from your server instead, check out the documentation for the put operation: https://khulnasoft.com/docs/khulnasoft-blob/using-blob-sdk#upload-a-blob
  *
  * @param pathname - The pathname to upload the blob to. This includes the filename.
  * @param body - The contents of your blob. This has to be a supported fetch body type https://developer.mozilla.org/en-US/docs/Web/API/fetch#body.
@@ -160,12 +159,6 @@ export type UploadOptions = ClientCommonPutOptions & CommonUploadOptions;
 export const upload = createPutMethod<UploadOptions>({
   allowedOptions: ['contentType'],
   extraChecks(options) {
-    if (typeof window === 'undefined') {
-      throw new BlobError(
-        'client/`upload` must be called from a client environment',
-      );
-    }
-
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Runtime check for DX.
     if (options.handleUploadUrl === undefined) {
       throw new BlobError(
@@ -177,10 +170,12 @@ export const upload = createPutMethod<UploadOptions>({
       // @ts-expect-error -- Runtime check for DX.
       options.addRandomSuffix !== undefined ||
       // @ts-expect-error -- Runtime check for DX.
+      options.createPutExtraChecks !== undefined ||
+      // @ts-expect-error -- Runtime check for DX.
       options.cacheControlMaxAge !== undefined
     ) {
       throw new BlobError(
-        "client/`upload` doesn't allow addRandomSuffix and cacheControlMaxAge. Configure these options at the server side when generating client tokens.",
+        "client/`upload` doesn't allow `addRandomSuffix`, `cacheControlMaxAge` or `allowOverwrite`. Configure these options at the server side when generating client tokens.",
       );
     }
   },
@@ -258,7 +253,7 @@ async function verifyCallbackSignature({
   return verified;
 }
 
-function hexToArrayByte(input: string): ArrayBuffer {
+function hexToArrayByte(input: string): Buffer {
   if (input.length % 2 !== 0) {
     throw new RangeError('Expected string to be an even number of characters');
   }
@@ -328,6 +323,7 @@ export interface HandleUploadOptions {
       | 'maximumSizeInBytes'
       | 'validUntil'
       | 'addRandomSuffix'
+      | 'allowOverwrite'
       | 'cacheControlMaxAge'
     > & { tokenPayload?: string | null }
   >;
@@ -381,7 +377,7 @@ export async function handleUpload({
       };
     }
     case 'blob.upload-completed': {
-      const signatureHeader = 'x-vercel-signature';
+      const signatureHeader = 'x-khulnasoft-signature';
       const signature = (
         'credentials' in request
           ? (request.headers.get(signatureHeader) ?? '')
@@ -453,7 +449,8 @@ async function retrieveClientToken(options: {
 }
 
 function toAbsoluteUrl(url: string): string {
-  return new URL(url, window.location.href).href;
+  // location is available in web workers too: https://developer.mozilla.org/en-US/docs/Web/API/Window/location
+  return new URL(url, location.href).href;
 }
 
 function isAbsoluteUrl(url: string): boolean {
@@ -498,7 +495,7 @@ export async function generateClientTokenFromReadWriteToken({
   if (!securedKey) {
     throw new BlobError('Unable to sign client token');
   }
-  return `vercel_blob_client_${storeId}_${Buffer.from(
+  return `khulnasoft_blob_client_${storeId}_${Buffer.from(
     `${securedKey}.${payload}`,
   ).toString('base64')}`;
 }
@@ -513,6 +510,7 @@ export interface GenerateClientTokenOptions extends BlobCommandOptions {
   allowedContentTypes?: string[];
   validUntil?: number;
   addRandomSuffix?: boolean;
+  allowOverwrite?: boolean;
   cacheControlMaxAge?: number;
 }
 

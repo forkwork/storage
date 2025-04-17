@@ -44,20 +44,20 @@ jobs:
       # Using ./test/next... is mandatory so we are not subject to playwright surprise updates
       - run: ./test/next/node_modules/.bin/playwright install --with-deps
 
-      # https://github.com/patrickedqvist/wait-for-vercel-preview
+      # https://github.com/patrickedqvist/wait-for-khulnasoft-preview
       # this allows to use action cache, which is not possible when using deployment_status otherwise
       # see https://github.com/actions/cache/issues/319
-      - name: Wait for Vercel Preview
-        uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
-        id: waitForVercelPreview
+      - name: Wait for Khulnasoft Preview
+        uses: patrickedqvist/wait-for-khulnasoft-preview@v1.3.1
+        id: waitForKhulnasoftPreview
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           max_timeout: 600
 
-      - name: Run Playwright tests on ${{ steps.waitForVercelPreview.outputs.url }}
+      - name: Run Playwright tests on ${{ steps.waitForKhulnasoftPreview.outputs.url }}
         run: pnpm integration-test
         env:
-          PLAYWRIGHT_TEST_BASE_URL: ${{ steps.waitForVercelPreview.outputs.url }}
+          PLAYWRIGHT_TEST_BASE_URL: ${{ steps.waitForKhulnasoftPreview.outputs.url }}
           BLOB_UPLOAD_SECRET: ${{ secrets.BLOB_UPLOAD_SECRET }}
 
       - uses: actions/upload-artifact@v4

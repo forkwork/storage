@@ -1,4 +1,76 @@
-# vercel-storage-integration-test-suite
+# khulnasoft-storage-integration-test-suite
+
+## 0.3.5
+
+### Patch Changes
+
+- Updated dependencies [00dfe23]
+  - @khulnasoft/blob@1.0.0
+
+## 0.3.4
+
+### Patch Changes
+
+- Updated dependencies [f88d80b]
+  - @khulnasoft/blob@0.27.3
+
+## 0.3.3
+
+### Patch Changes
+
+- Updated dependencies [54ce5f8]
+  - @khulnasoft/blob@0.27.2
+
+## 0.3.2
+
+### Patch Changes
+
+- Updated dependencies [0c98feb]
+  - @khulnasoft/blob@0.27.1
+
+## 0.3.1
+
+### Patch Changes
+
+- Updated dependencies [7872e61]
+  - @khulnasoft/blob@0.27.0
+
+## 0.3.0
+
+### Minor Changes
+
+- c3afec3: Add onUploadProgress feature to put/upload
+
+  You can now track the upload progress in Node.js and all major browsers when
+  using put/upload in multipart, non-multipart and client upload modes. Basically
+  anywhere in our API you can upload a file, then you can follow the upload
+  progress.
+
+  Here's a basic usage example:
+
+  ```
+  const blob = await put('big-file.pdf', file, {
+    access: 'public',
+    onUploadProgress(event) {
+      console.log(event.loaded, event.total, event.percentage);
+    }
+  });
+  ```
+
+  Fixes #543
+  Fixes #642
+
+### Patch Changes
+
+- Updated dependencies [c3afec3]
+  - @khulnasoft/blob@0.26.0
+
+## 0.2.23
+
+### Patch Changes
+
+- Updated dependencies [d7ef349]
+  - @khulnasoft/edge-config@1.4.0
 
 ## 0.2.22
 
@@ -108,7 +180,7 @@
   ```ts
   const abortController = new AbortController();
 
-  vercelBlob
+  khulnasoftBlob
     .put('canceled.txt', 'test', {
       access: 'public',
       abortSignal: abortController.signal,
@@ -202,26 +274,26 @@
   Use `createMultipartUpload`, `uploadPart` and `completeMultipartUpload` to manage the upload.
 
   ```ts
-  const { key, uploadId } = await vercelBlob.createMultipartUpload(
+  const { key, uploadId } = await khulnasoftBlob.createMultipartUpload(
     'big-file.txt',
     { access: 'public' },
   );
 
-  const part1 = await vercelBlob.uploadPart(fullPath, 'first part', {
+  const part1 = await khulnasoftBlob.uploadPart(fullPath, 'first part', {
     access: 'public',
     key,
     uploadId,
     partNumber: 1,
   });
 
-  const part2 = await vercelBlob.uploadPart(fullPath, 'second part', {
+  const part2 = await khulnasoftBlob.uploadPart(fullPath, 'second part', {
     access: 'public',
     key,
     uploadId,
     partNumber: 2,
   });
 
-  const blob = await vercelBlob.completeMultipartUpload(
+  const blob = await khulnasoftBlob.completeMultipartUpload(
     fullPath,
     [part1, part2],
     {
@@ -237,9 +309,12 @@
   For multipart methods, since some of the data remains consistent (uploadId, key), you can make use of the `createMultipartUploader`. This function stores certain data internally, making it possible to offer convinient `put` and `complete` functions.
 
   ```ts
-  const uploader = await vercelBlob.createMultipartUploader('big-file.txt', {
-    access: 'public',
-  });
+  const uploader = await khulnasoftBlob.createMultipartUploader(
+    'big-file.txt',
+    {
+      access: 'public',
+    },
+  );
 
   const part1 = await uploader.uploadPart(1, createReadStream(fullPath));
 
@@ -319,7 +394,7 @@
   Now the the SDK validates if the operation is a folder creation by checking if the pathname ends with a trailling slash.
 
   ```ts
-  const blob = await vercelBlob.put('folder/', {
+  const blob = await khulnasoftBlob.put('folder/', {
     access: 'public',
     addRandomSuffix: false,
   });
@@ -327,11 +402,11 @@
 
 - 898c14a: feat(blob): Add multipart option to reliably upload medium and large files
 
-  It turns out, uploading large files using Vercel Blob has been a struggle for users.
+  It turns out, uploading large files using Khulnasoft Blob has been a struggle for users.
   Before this change, file uploads were limited to around 200MB for technical reasons.
   Before this change, even uploading a file of 100MB could fail for various reasons (network being one of them).
 
-  To solve this for good, we're introducting a new option to `put` and `upload` calls: `multipart: true`. This new option will make sure your file is uploaded parts by parts to Vercel Blob, and when some parts are failing, we will retry them. This option is available for server and client uploads.
+  To solve this for good, we're introducting a new option to `put` and `upload` calls: `multipart: true`. This new option will make sure your file is uploaded parts by parts to Khulnasoft Blob, and when some parts are failing, we will retry them. This option is available for server and client uploads.
 
   Usage:
 
@@ -356,7 +431,7 @@
   ```ts
   import { createReadStream } from 'node:fs';
 
-  const blob = await vercelBlob.put(
+  const blob = await khulnasoftBlob.put(
     'elon.mp4',
     // this works 👍, it will gradually read the file from the system and upload it
     createReadStream('/users/Elon/me.mp4'),
@@ -369,7 +444,7 @@
     'https://example-files.online-convert.com/video/mp4/example_big.mp4',
   );
 
-  const blob = await vercelBlob.put(
+  const blob = await khulnasoftBlob.put(
     'example_big.mp4',
     // this works too 👍, it will gradually read the file from internet and upload it
     response.body,

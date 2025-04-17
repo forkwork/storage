@@ -17,7 +17,7 @@ export async function EdgeConfigTestRunner({
   apiOrPage,
   directory,
   environment,
-}: TestRunnerProps): Promise<JSX.Element> {
+}: TestRunnerProps): Promise<React.JSX.Element> {
   const { status, url, message } = await runTest({
     apiOrPage,
     directory,
@@ -53,14 +53,13 @@ export function getUrl({
   directory,
   environment,
 }: TestRunnerProps): URL {
-  const base = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : `http://localhost:${process.env.PORT || 3000}`;
+  const port = process.env.PORT ?? 3000;
+  const baseUrl = `http://localhost:${port.toString()}`;
   const trailingFragment = `khulnasoft/edge-config/${directory}/${environment}`;
   if (apiOrPage === 'api') {
-    return new URL(`${base}/api/${trailingFragment}`, base);
+    return new URL(`${baseUrl}/api/${trailingFragment}`, baseUrl);
   }
-  return new URL(`${base}/${trailingFragment}`, base);
+  return new URL(`${baseUrl}/${trailingFragment}`, baseUrl);
 }
 
 async function runTest({

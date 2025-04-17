@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-export default function Page(): JSX.Element {
+export default function Page(): React.JSX.Element {
   return (
     <div
       style={{
@@ -36,8 +36,8 @@ export default function Page(): JSX.Element {
           justifyContent: 'stretch',
         }}
       >
-        <Link href="/vercel/pages/blob">Blob</Link>
-        <Link href="/vercel/pages/blob/image">Blob Image</Link>
+        <Link href="/khulnasoft/pages/blob">Blob</Link>
+        <Link href="/khulnasoft/pages/blob/image">Blob Image</Link>
       </div>
     </div>
   );

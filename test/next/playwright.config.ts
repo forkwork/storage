@@ -70,8 +70,14 @@ const config: PlaywrightTestConfig = {
             ...devices['Desktop Safari'],
           },
         },
+        {
+          name: 'Desktop Edge',
+          use: {
+            ...devices['Desktop Edge'],
+          },
+        },
       ],
 };
 
-// eslint-disable-next-line import/no-default-export -- [@vercel/style-guide@5 migration]
+// eslint-disable-next-line import/no-default-export -- [@khulnasoft/style-guide@5 migration]
 export default config;

@@ -59,14 +59,14 @@ describe('api', () => {
       expect(fetchMock).toHaveBeenCalledTimes(1);
       expect(fetchMock).toHaveBeenNthCalledWith(
         1,
-        'https://blob.vercel-storage.com/api',
+        'https://blob.khulnasoft-storage.com/api',
         {
           body: '{"foo":"bar"}',
           headers: {
             authorization: 'Bearer 123',
             'x-api-blob-request-attempt': '0',
             'x-api-blob-request-id': expect.any(String) as string,
-            'x-api-version': '7',
+            'x-api-version': '10',
           },
           method: 'POST',
         },
@@ -89,7 +89,7 @@ describe('api', () => {
           }),
         );
 
-        process.env.VERCEL_BLOB_RETRIES = '1';
+        process.env.KHULNASOFT_BLOB_RETRIES = '1';
         process.env.BLOB_READ_WRITE_TOKEN = 'test-token';
 
         await expect(

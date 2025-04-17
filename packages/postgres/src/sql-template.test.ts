@@ -1,4 +1,4 @@
-import { VercelPostgresError } from './error';
+import { KhulnasoftPostgresError } from './error';
 import { sqlTemplate } from './sql-template';
 
 const validCases = [
@@ -35,17 +35,17 @@ describe('sql', () => {
     expect(() => {
       // @ts-expect-error - intentionally incorrect usage
       sqlTemplate(`SELECT * FROM posts WHERE likes > ${likes}`);
-    }).toThrow(VercelPostgresError);
+    }).toThrow(KhulnasoftPostgresError);
   });
   it('throws when deliberately not used as a tagged literal to try to make us look dumb', () => {
     const likes = 100;
     expect(() => {
       // @ts-expect-error - intentionally incorrect usage
       sqlTemplate([`SELECT * FROM posts WHERE likes > ${likes}`]);
-    }).toThrow(VercelPostgresError);
+    }).toThrow(KhulnasoftPostgresError);
     expect(() => {
       // @ts-expect-error - intentionally incorrect usage
       sqlTemplate(`SELECT * FROM posts WHERE likes > ${likes}`, 123);
-    }).toThrow(VercelPostgresError);
+    }).toThrow(KhulnasoftPostgresError);
   });
 });

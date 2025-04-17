@@ -2,7 +2,7 @@
   "name": "@khulnasoft/edge-config-fs",
   "version": "0.1.0",
   "description": "Use @khulnasoft/edge-config instead.",
-  "homepage": "https://vercel.com",
+  "homepage": "https://khulnasoft.com",
   "repository": {
     "type": "git",
     "url": "https://github.com/khulnasoft/storage.git",

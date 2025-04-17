@@ -1,6 +1,10 @@
 # @khulnasoft/postgres
 
-A client that works with Vercel Postgres.
+<!-- prettier-ignore -->
+> [!CAUTION]
+> **`@khulnasoft/postgres` has moved to the [`@neondatabase/serverless` package from Neon instead](https://github.com/neondatabase/serverless).** See the [Khulnasoft Postgres to Neon transition guide](https://neon.tech/docs/guides/khulnasoft-postgres-transition-guide).
+
+A client that works with Khulnasoft Postgres.
 
 ## Quick Start
 
@@ -84,7 +88,7 @@ const directConnectionString = postgresConnectionString('direct');
 
 ### Connection Config
 
-When using the `createClient` or `createPool` functions, you can pass in additional options alongside the connection string that conforms to `VercelPostgresClientConfig` or `VercelPostgresPoolConfig`.
+When using the `createClient` or `createPool` functions, you can pass in additional options alongside the connection string that conforms to `KhulnasoftPostgresClientConfig` or `KhulnasoftPostgresPoolConfig`.
 
 ### Documentation
 

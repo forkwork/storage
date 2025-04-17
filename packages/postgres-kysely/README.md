@@ -1,5 +1,9 @@
 # @khulnasoft/postgres-kysely
 
+<!-- prettier-ignore -->
+> [!CAUTION]
+> **`@khulnasoft/postgres-kysely` has moved to the [`@neondatabase/serverless` package from Neon instead](https://github.com/neondatabase/serverless).** For a complete example of its implementation, check out the [neondatabase-labs/neon-khulnasoft-kysely](https://github.com/neondatabase-labs/neon-khulnasoft-kysely) repository.
+
 A `@khulnasoft/postgres` wrapper for the [Kysely](https://github.com/kysely-org/kysely) query builder.
 
 ## Quick Start
@@ -99,7 +103,7 @@ const person = await db
 
 ### Connection Config
 
-When using the `createClient` or `createPool` functions, you can pass in additional options alongside the connection string that conforms to `VercelPostgresClientConfig` or `VercelPostgresPoolConfig`.
+When using the `createClient` or `createPool` functions, you can pass in additional options alongside the connection string that conforms to `KhulnasoftPostgresClientConfig` or `KhulnasoftPostgresPoolConfig`.
 
 ### A note for Vite users
 

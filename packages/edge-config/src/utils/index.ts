@@ -68,15 +68,17 @@ export const clone = trace(
 /**
  * Parses internal edge config connection strings
  *
- * Internal edge config connection strings are those which are native to Vercel.
+ * Internal edge config connection strings are those which are native to Khulnasoft.
  *
  * Internal Edge Config Connection Strings look like this:
- * https://edge-config.vercel.com/<edgeConfigId>?token=<token>
+ * https://edge-config.khulnasoft.com/<edgeConfigId>?token=<token>
  */
-function parseVercelConnectionStringFromUrl(text: string): Connection | null {
+function parseKhulnasoftConnectionStringFromUrl(
+  text: string,
+): Connection | null {
   try {
     const url = new URL(text);
-    if (url.host !== 'edge-config.vercel.com') return null;
+    if (url.host !== 'edge-config.khulnasoft.com') return null;
     if (url.protocol !== 'https:') return null;
     if (!url.pathname.startsWith('/ecfg')) return null;
 
@@ -87,8 +89,8 @@ function parseVercelConnectionStringFromUrl(text: string): Connection | null {
     if (!token || token === '') return null;
 
     return {
-      type: 'vercel',
-      baseUrl: `https://edge-config.vercel.com/${id}`,
+      type: 'khulnasoft',
+      baseUrl: `https://edge-config.khulnasoft.com/${id}`,
       id,
       version: '1',
       token,
@@ -113,8 +115,8 @@ function parseConnectionFromQueryParams(text: string): Connection | null {
     if (!id || !token) return null;
 
     return {
-      type: 'vercel',
-      baseUrl: `https://edge-config.vercel.com/${id}`,
+      type: 'khulnasoft',
+      baseUrl: `https://edge-config.khulnasoft.com/${id}`,
       id,
       version: '1',
       token,
@@ -129,7 +131,7 @@ function parseConnectionFromQueryParams(text: string): Connection | null {
 /**
  * Parses info contained in connection strings.
  *
- * This works with the vercel-provided connection strings, but it also
+ * This works with the khulnasoft-provided connection strings, but it also
  * works with custom connection strings.
  *
  * The reason we support custom connection strings is that it makes testing
@@ -139,13 +141,13 @@ function parseConnectionFromQueryParams(text: string): Connection | null {
  * msw.
  *
  * To allow interception we need a custom connection string as the
- * edge-config.vercel.com connection string might not always go over
+ * edge-config.khulnasoft.com connection string might not always go over
  * the network, so msw would not have a chance to intercept.
  */
 /**
  * Parses external edge config connection strings
  *
- * External edge config connection strings are those which are foreign to Vercel.
+ * External edge config connection strings are those which are foreign to Khulnasoft.
  *
  * External Edge Config Connection Strings look like this:
  * - https://example.com/?id=<edgeConfigId>&token=<token>
@@ -188,7 +190,7 @@ function parseExternalConnectionStringFromUrl(
  * Parse the edgeConfigId and token from an Edge Config Connection String.
  *
  * Edge Config Connection Strings usually look like one of the following:
- *  - https://edge-config.vercel.com/<edgeConfigId>?token=<token>
+ *  - https://edge-config.khulnasoft.com/<edgeConfigId>?token=<token>
  *  - edge-config:id=<edgeConfigId>&token=<token>
  *
  * @param text - A potential Edge Config Connection String
@@ -199,7 +201,7 @@ export function parseConnectionString(
 ): Connection | null {
   return (
     parseConnectionFromQueryParams(connectionString) ||
-    parseVercelConnectionStringFromUrl(connectionString) ||
+    parseKhulnasoftConnectionStringFromUrl(connectionString) ||
     parseExternalConnectionStringFromUrl(connectionString)
   );
 }

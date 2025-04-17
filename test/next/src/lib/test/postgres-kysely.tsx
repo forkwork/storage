@@ -11,7 +11,7 @@ export async function PostgresTestRunner({
   apiOrPage,
   directory,
   environment,
-}: TestRunnerProps): Promise<JSX.Element> {
+}: TestRunnerProps): Promise<React.JSX.Element> {
   let message = '';
   let status = 'Failed';
   const url = getUrl({
@@ -72,8 +72,8 @@ Link: `;
 }
 
 function getUrl({ apiOrPage, directory, environment }: TestRunnerProps): URL {
-  const base = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
+  const base = process.env.KHULNASOFT_URL
+    ? `https://${process.env.KHULNASOFT_URL}`
     : 'http://localhost:3000';
   const trailingFragment = `khulnasoft/postgres-kysely/${directory}/${environment}`;
   if (apiOrPage === 'api') {

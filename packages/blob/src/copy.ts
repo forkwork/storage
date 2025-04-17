@@ -8,13 +8,13 @@ export interface CopyBlobResult {
   url: string;
   downloadUrl: string;
   pathname: string;
-  contentType?: string;
+  contentType: string;
   contentDisposition: string;
 }
 
 /**
  * Copies a blob to another location in your store.
- * Detailed documentation can be found here: https://vercel.com/docs/storage/vercel-blob/using-blob-sdk#copy-a-blob
+ * Detailed documentation can be found here: https://khulnasoft.com/docs/khulnasoft-blob/using-blob-sdk#copy-a-blob
  *
  * @param fromUrl - The blob URL to copy. You can only copy blobs that are in the store, that your 'BLOB_READ_WRITE_TOKEN' has access to.
  * @param toPathname - The pathname to copy the blob to. This includes the filename.
@@ -55,6 +55,10 @@ export async function copy(
     headers['x-add-random-suffix'] = options.addRandomSuffix ? '1' : '0';
   }
 
+  if (options.allowOverwrite !== undefined) {
+    headers['x-allow-overwrite'] = options.allowOverwrite ? '1' : '0';
+  }
+
   if (options.contentType) {
     headers['x-content-type'] = options.contentType;
   }
@@ -63,8 +67,10 @@ export async function copy(
     headers['x-cache-control-max-age'] = options.cacheControlMaxAge.toString();
   }
 
+  const params = new URLSearchParams({ pathname: toPathname, fromUrl });
+
   const response = await requestApi<CopyBlobResult>(
-    `/${toPathname}?fromUrl=${fromUrl}`,
+    `?${params.toString()}`,
     {
       method: 'PUT',
       headers,

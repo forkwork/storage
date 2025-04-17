@@ -4,7 +4,7 @@ import type { ScanCommandOptions, RedisConfigNodejs } from '@upstash/redis';
 let _kv: Redis | null = null;
 process.env.UPSTASH_DISABLE_TELEMETRY = '1';
 
-export class VercelKV extends Redis {
+export class KhulnasoftKV extends Redis {
   // This API is based on https://github.com/redis/node-redis#scan-iterator which is not supported in @upstash/redis
   /**
    * Same as `scan` but returns an AsyncIterator to allow iteration via `for await`.
@@ -13,7 +13,7 @@ export class VercelKV extends Redis {
     let cursor = '0';
     let keys: string[];
     do {
-      // eslint-disable-next-line no-await-in-loop -- [@vercel/style-guide@5 migration]
+      // eslint-disable-next-line no-await-in-loop -- [@khulnasoft/style-guide@5 migration]
       [cursor, keys] = await this.scan(cursor, options);
       for (const key of keys) {
         yield key;
@@ -31,7 +31,7 @@ export class VercelKV extends Redis {
     let cursor = '0';
     let items: (number | string)[];
     do {
-      // eslint-disable-next-line no-await-in-loop -- [@vercel/style-guide@5 migration]
+      // eslint-disable-next-line no-await-in-loop -- [@khulnasoft/style-guide@5 migration]
       [cursor, items] = await this.hscan(key, cursor, options);
       for (const item of items) {
         yield item;
@@ -49,7 +49,7 @@ export class VercelKV extends Redis {
     let cursor = '0';
     let items: (number | string)[];
     do {
-      // eslint-disable-next-line no-await-in-loop -- [@vercel/style-guide@5 migration]
+      // eslint-disable-next-line no-await-in-loop -- [@khulnasoft/style-guide@5 migration]
       [cursor, items] = await this.sscan(key, cursor, options);
       for (const item of items) {
         yield item;
@@ -67,7 +67,7 @@ export class VercelKV extends Redis {
     let cursor = '0';
     let items: (number | string)[];
     do {
-      // eslint-disable-next-line no-await-in-loop -- [@vercel/style-guide@5 migration]
+      // eslint-disable-next-line no-await-in-loop -- [@khulnasoft/style-guide@5 migration]
       [cursor, items] = await this.zscan(key, cursor, options);
       for (const item of items) {
         yield item;
@@ -76,8 +76,8 @@ export class VercelKV extends Redis {
   }
 }
 
-export function createClient(config: RedisConfigNodejs): VercelKV {
-  return new VercelKV({
+export function createClient(config: RedisConfigNodejs): KhulnasoftKV {
+  return new KhulnasoftKV({
     // The Next.js team recommends no value or `default` for fetch requests's `cache` option
     // upstash/redis defaults to `no-store`, so we enforce `default`
     cache: 'default',
@@ -86,13 +86,13 @@ export function createClient(config: RedisConfigNodejs): VercelKV {
   });
 }
 
-// eslint-disable-next-line import/no-default-export -- [@vercel/style-guide@5 migration]
+// eslint-disable-next-line import/no-default-export -- [@khulnasoft/style-guide@5 migration]
 export default new Proxy(
   {},
   {
     get(target, prop, receiver) {
       if (prop === 'then' || prop === 'parse') {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- [@vercel/style-guide@5 migration]
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- [@khulnasoft/style-guide@5 migration]
         return Reflect.get(target, prop, receiver);
       }
 
@@ -102,7 +102,7 @@ export default new Proxy(
             '@khulnasoft/kv: Missing required environment variables KV_REST_API_URL and KV_REST_API_TOKEN',
           );
         }
-        // eslint-disable-next-line no-console -- [@vercel/style-guide@5 migration]
+        // eslint-disable-next-line no-console -- [@khulnasoft/style-guide@5 migration]
         console.warn(
           '\x1b[33m"The default export has been moved to a named export and it will be removed in version 1, change to import { kv }\x1b[0m"',
         );
@@ -113,11 +113,11 @@ export default new Proxy(
         });
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- [@vercel/style-guide@5 migration]
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- [@khulnasoft/style-guide@5 migration]
       return Reflect.get(_kv, prop);
     },
   },
-) as VercelKV;
+) as KhulnasoftKV;
 
 export const kv = new Proxy(
   {},
@@ -136,8 +136,8 @@ export const kv = new Proxy(
         });
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- [@vercel/style-guide@5 migration]
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- [@khulnasoft/style-guide@5 migration]
       return Reflect.get(_kv, prop);
     },
   },
-) as VercelKV;
+) as KhulnasoftKV;

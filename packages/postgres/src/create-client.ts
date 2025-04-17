@@ -1,16 +1,16 @@
 import type { QueryResult, QueryResultRow } from '@neondatabase/serverless';
 import { Client } from '@neondatabase/serverless';
-import type { VercelPostgresClientConfig } from './types';
+import type { KhulnasoftPostgresClientConfig } from './types';
 import {
   isDirectConnectionString,
   isLocalhostConnectionString,
   postgresConnectionString,
 } from './postgres-connection-string';
-import { VercelPostgresError } from './error';
+import { KhulnasoftPostgresError } from './error';
 import type { Primitive } from './sql-template';
 import { sqlTemplate } from './sql-template';
 
-export class VercelClient extends Client {
+export class KhulnasoftClient extends Client {
   /**
    * A template literal tag providing safe, easy to use SQL parameterization.
    * Parameters are substituted using the underlying Postgres database, and so must follow
@@ -36,12 +36,12 @@ export class VercelClient extends Client {
 }
 
 export function createClient(
-  config?: VercelPostgresClientConfig,
-): VercelClient {
+  config?: KhulnasoftPostgresClientConfig,
+): KhulnasoftClient {
   const connectionString =
     config?.connectionString ?? postgresConnectionString('direct');
   if (!connectionString)
-    throw new VercelPostgresError(
+    throw new KhulnasoftPostgresError(
       'missing_connection_string',
       "You did not supply a 'connectionString' and no 'POSTGRES_URL_NON_POOLING' env var was found.",
     );
@@ -49,11 +49,11 @@ export function createClient(
     !isLocalhostConnectionString(connectionString) &&
     !isDirectConnectionString(connectionString)
   )
-    throw new VercelPostgresError(
+    throw new KhulnasoftPostgresError(
       'invalid_connection_string',
       'This connection string is meant to be used with a pooled connection. Try `createPool()` instead.',
     );
-  return new VercelClient({
+  return new KhulnasoftClient({
     ...config,
     connectionString,
   });

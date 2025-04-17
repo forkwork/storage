@@ -1,4 +1,4 @@
-import { VercelPostgresError } from './error';
+import { KhulnasoftPostgresError } from './error';
 
 export type ConnectionStringType = 'pool' | 'direct';
 
@@ -19,7 +19,7 @@ export function postgresConnectionString(
     default: {
       const _exhaustiveCheck: never = type;
       const str = _exhaustiveCheck as string;
-      throw new VercelPostgresError(
+      throw new KhulnasoftPostgresError(
         'invalid_connection_type',
         `Unhandled type: ${str}`,
       );

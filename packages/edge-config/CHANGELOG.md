@@ -1,5 +1,11 @@
 # @khulnasoft/edge-config
 
+## 1.4.0
+
+### Minor Changes
+
+- d7ef349: Add the `consistentRead` option to allow reading from the origin. Note that it's not recommended to use this property without good reason due to the extrem performance cost.
+
 ## 1.3.0
 
 ### Minor Changes
@@ -111,7 +117,7 @@
 
 ### Patch Changes
 
-- 97a3d06: Add `x-edge-config-vercel-env` and `x-edge-config-sdk` headers to requests
+- 97a3d06: Add `x-edge-config-khulnasoft-env` and `x-edge-config-sdk` headers to requests
 
 ## 0.2.0
 
@@ -259,7 +265,7 @@ This is an identical version, just without the canary tag.
   - `getAll()` allows fetching all items of an Edge Config
   - `getAll(keys: string[])` allows fetching a subset of the Edge Config's items
 
-  Use `process.env.EDGE_CONFIG` instead of `process.env.VERCEL_EDGE_CONFIG` for the default Edge Config.
+  Use `process.env.EDGE_CONFIG` instead of `process.env.KHULNASOFT_EDGE_CONFIG` for the default Edge Config.
 
 - 888b861: drop cjs support
 - b614218: drop esm support

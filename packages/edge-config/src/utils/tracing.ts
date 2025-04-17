@@ -3,7 +3,9 @@ import { name as pkgName, version } from '../../package.json';
 
 // Use a symbol to avoid having global variable that is scoped to this file,
 // as it can lead to issues with cjs and mjs being used at the same time.
-const edgeConfigTraceSymbol = Symbol.for('@khulnasoft/edge-config:global-trace');
+const edgeConfigTraceSymbol = Symbol.for(
+  '@khulnasoft/edge-config:global-trace',
+);
 
 /**
  * Allows setting the `@opentelemetry/api` tracer provider to generate traces

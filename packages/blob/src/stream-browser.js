@@ -5,7 +5,7 @@
 export const Readable = {
   toWeb() {
     throw new Error(
-      'Vercel Blob: Sorry, we cannot get a Readable stream in this environment. If you see this message please open an issue here: https://github.com/khulnasoft/storage/ with details on your environment.',
+      'Khulnasoft Blob: Sorry, we cannot get a Readable stream in this environment. If you see this message please open an issue here: https://github.com/khulnasoft/storage/ with details on your environment.',
     );
   },
 };

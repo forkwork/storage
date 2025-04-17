@@ -22,16 +22,19 @@ export type {
 } from '@neondatabase/serverless';
 
 type ConfigItemsToOmit = 'user' | 'database' | 'password' | 'host' | 'port';
-export type VercelPostgresClientConfig = Omit<ClientConfig, ConfigItemsToOmit>;
-export type VercelPostgresPoolConfig = Omit<PoolConfig, ConfigItemsToOmit>;
+export type KhulnasoftPostgresClientConfig = Omit<
+  ClientConfig,
+  ConfigItemsToOmit
+>;
+export type KhulnasoftPostgresPoolConfig = Omit<PoolConfig, ConfigItemsToOmit>;
 
-export interface VercelClientBase extends ClientBase {
+export interface KhulnasoftClientBase extends ClientBase {
   sql: <O extends QueryResultRow>(
     strings: TemplateStringsArray,
     ...values: Primitive[]
   ) => Promise<QueryResult<O>>;
 }
 
-export interface VercelPoolClient extends VercelClientBase {
+export interface KhulnasoftPoolClient extends KhulnasoftClientBase {
   release: (err?: Error | boolean) => void;
 }

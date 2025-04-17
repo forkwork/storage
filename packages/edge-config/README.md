@@ -86,14 +86,14 @@ In order to make the returned value mutable, you can use the exported function `
 
 Edge Config Items can be managed in two ways:
 
-- [Using the Dashboard on vercel.com](https://vercel.com/docs/concepts/edge-network/edge-config/edge-config-dashboard#manage-items-in-the-store)
-- [Using the Vercel API](https://vercel.com/docs/concepts/edge-network/edge-config/vercel-api#update-your-edge-config)
+- [Using the Dashboard on khulnasoft.com](https://khulnasoft.com/docs/concepts/edge-network/edge-config/edge-config-dashboard#manage-items-in-the-store)
+- [Using the Khulnasoft API](https://khulnasoft.com/docs/concepts/edge-network/edge-config/khulnasoft-api#update-your-edge-config)
 
 Keep in mind that Edge Config is built for very high read volume, but for infrequent writes.
 
 ## Features
 
-- Works in [Edge Runtime](https://edge-runtime.vercel.sh/), [Node.js](https://nodejs.org) and in the browser
+- Works in [Edge Runtime](https://edge-runtime.khulnasoft.sh/), [Node.js](https://nodejs.org) and in the browser
 
 ## Error Handling
 
@@ -102,11 +102,11 @@ Keep in mind that Edge Config is built for very high read volume, but for infreq
 
 ## Edge Runtime Support
 
-`@khulnasoft/edge-config` is compatible with the [Edge Runtime](https://edge-runtime.vercel.app/). It can be used inside environments like [Vercel Edge Functions](https://vercel.com/edge) as follows:
+`@khulnasoft/edge-config` is compatible with the [Edge Runtime](https://edge-runtime.khulnasoft.app/). It can be used inside environments like [Khulnasoft Edge Functions](https://khulnasoft.com/edge) as follows:
 
 ```js
 // Next.js (pages/api/edge.js) (npm i next@canary)
-// Other frameworks (api/edge.js) (npm i -g vercel@canary)
+// Other frameworks (api/edge.js) (npm i -g khulnasoft@canary)
 
 import { get } from '@khulnasoft/edge-config';
 

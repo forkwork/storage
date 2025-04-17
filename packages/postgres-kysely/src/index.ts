@@ -13,14 +13,14 @@ import {
 } from 'kysely';
 import type { Pool } from '@neondatabase/serverless';
 import { createPool } from '@khulnasoft/postgres';
-import type { VercelPostgresPoolConfig } from '@khulnasoft/postgres';
-import { VercelPostgresKyselyError } from './error';
+import type { KhulnasoftPostgresPoolConfig } from '@khulnasoft/postgres';
+import { KhulnasoftPostgresKyselyError } from './error';
 
-type VercelPostgresDialectConfig = VercelPostgresPoolConfig & {
+type KhulnasoftPostgresDialectConfig = KhulnasoftPostgresPoolConfig & {
   pool: Pool;
 };
 
-class VercelPostgresAdapter extends PostgresAdapter {
+class KhulnasoftPostgresAdapter extends PostgresAdapter {
   // represented as readonly property to satisfy eslint rule:
   // typescript-eslint/class-literal-property-style
   private readonly _supportsTransactionalDdl = false;
@@ -29,21 +29,21 @@ class VercelPostgresAdapter extends PostgresAdapter {
   }
 }
 
-class VercelPostgresDialect extends PostgresDialect implements Dialect {
-  constructor(private config: VercelPostgresDialectConfig) {
+class KhulnasoftPostgresDialect extends PostgresDialect implements Dialect {
+  constructor(private config: KhulnasoftPostgresDialectConfig) {
     super(config);
   }
 
   createAdapter(): DialectAdapter {
-    return new VercelPostgresAdapter();
+    return new KhulnasoftPostgresAdapter();
   }
 
   createDriver(): Driver {
-    return new VercelPostgresPoolDriver(this.config);
+    return new KhulnasoftPostgresPoolDriver(this.config);
   }
 }
 
-class VercelPostgresPoolDriver extends PostgresDriver {
+class KhulnasoftPostgresPoolDriver extends PostgresDriver {
   // Rather than trying to rebuild a perfectly good connection pool,
   // we can just use a proxy to throw if the user tries to stream.
   async acquireConnection(): Promise<DatabaseConnection> {
@@ -52,7 +52,7 @@ class VercelPostgresPoolDriver extends PostgresDriver {
       get(target, p) {
         const original = target[p as keyof DatabaseConnection];
         if (p === 'streamQuery' && typeof original === 'function') {
-          throw new VercelPostgresKyselyError(
+          throw new KhulnasoftPostgresKyselyError(
             'kysely_streaming_not_supported',
             'Streaming is not supported yet.',
           );
@@ -66,21 +66,21 @@ class VercelPostgresPoolDriver extends PostgresDriver {
   }
 
   beginTransaction(): Promise<void> {
-    throw new VercelPostgresKyselyError(
+    throw new KhulnasoftPostgresKyselyError(
       'kysely_transactions_not_supported',
       'Transactions are not supported yet.',
     );
   }
 
   commitTransaction(): Promise<void> {
-    throw new VercelPostgresKyselyError(
+    throw new KhulnasoftPostgresKyselyError(
       'kysely_transactions_not_supported',
       'Transactions are not supported yet.',
     );
   }
 
   rollbackTransaction(): Promise<void> {
-    throw new VercelPostgresKyselyError(
+    throw new KhulnasoftPostgresKyselyError(
       'kysely_transactions_not_supported',
       'Transactions are not supported yet.',
     );
@@ -88,12 +88,12 @@ class VercelPostgresPoolDriver extends PostgresDriver {
 }
 
 export function createKysely<T>(
-  poolConfig?: VercelPostgresPoolConfig,
+  poolConfig?: KhulnasoftPostgresPoolConfig,
   kyselyConfig?: Partial<KyselyConfig>,
 ): Kysely<T> {
   return new Kysely<T>({
     ...kyselyConfig,
-    dialect: new VercelPostgresDialect({
+    dialect: new KhulnasoftPostgresDialect({
       ...poolConfig,
       pool: createPool(poolConfig),
     }),

@@ -3,15 +3,15 @@ name: Playwright Dev Tests
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-  # These tokens can be found in Curated Tests > vercel-storage-next-integration-test-suite > storage > vcs-integration-test-suite-pg
+  # These tokens can be found in Curated Tests > khulnasoft-storage-next-integration-test-suite > storage > vcs-integration-test-suite-pg
   POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
   POSTGRES_URL_NON_POOLING: ${{ secrets.POSTGRES_URL_NON_POOLING }}
-  # This token can be found in Curated Tests > vercel-storage-next-integration-test-suite > storage > vcs-integration-test-suite-blob
+  # This token can be found in Curated Tests > khulnasoft-storage-next-integration-test-suite > storage > vcs-integration-test-suite-blob
   BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
-  # These tokens can be found in Curated Tests > vercel-storage-next-integration-test-suite > storage > vcs-integration-test-suite-kv
+  # These tokens can be found in Curated Tests > khulnasoft-storage-next-integration-test-suite > storage > vcs-integration-test-suite-kv
   KV_REST_API_URL: ${{ secrets.KV_REST_API_URL }}
   KV_REST_API_TOKEN: ${{ secrets.KV_REST_API_TOKEN }}
-  # This token can be found in Curated Tests > vercel-storage-next-integration-test-suite > storage > vcs-integration-test-suite-ecfg
+  # This token can be found in Curated Tests > khulnasoft-storage-next-integration-test-suite > storage > vcs-integration-test-suite-ecfg
   EDGE_CONFIG: ${{ secrets.EDGE_CONFIG }}
 
 on:
@@ -59,7 +59,7 @@ jobs:
         run: pnpm integration-test -- @khulnasoft/blob
         env:
           BLOB_UPLOAD_SECRET: ${{ secrets.BLOB_UPLOAD_SECRET }}
-          VERCEL_BLOB_API_URL: 'https://vercel.com/api/blob'
+          KHULNASOFT_BLOB_API_URL: 'https://khulnasoft.com/api/blob'
 
       - uses: actions/upload-artifact@v4
         if: always()

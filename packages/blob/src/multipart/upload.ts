@@ -1,12 +1,11 @@
-import bytes from 'bytes';
-import type { BodyInit } from 'undici';
+import throttle from 'throttleit';
 import { BlobServiceNotAvailable, requestApi } from '../api';
 import { debug } from '../debug';
-import {
-  type CommonCreateBlobOptions,
-  type BlobCommandOptions,
-  BlobError,
-  isPlainObject,
+import { BlobError, isPlainObject, bytes } from '../helpers';
+import type {
+  WithUploadProgress,
+  CommonCreateBlobOptions,
+  BlobCommandOptions,
 } from '../helpers';
 import { createPutHeaders, createPutOptions } from '../put-helpers';
 import type { PutBody, CreatePutMethodOptions } from '../put-helpers';
@@ -74,28 +73,26 @@ export async function uploadPart({
   key: string;
   pathname: string;
   headers: Record<string, string>;
-  options: BlobCommandOptions;
+  options: BlobCommandOptions & WithUploadProgress;
   internalAbortController?: AbortController;
   part: PartInput;
 }): Promise<UploadPartApiResponse> {
+  const params = new URLSearchParams({ pathname });
+
   const responsePromise = requestApi<UploadPartApiResponse>(
-    `/mpu/${pathname}`,
+    `/mpu?${params.toString()}`,
     {
       signal: internalAbortController.signal,
       method: 'POST',
       headers: {
         ...headers,
         'x-mpu-action': 'upload',
-        'x-mpu-key': encodeURI(key),
+        'x-mpu-key': encodeURIComponent(key),
         'x-mpu-upload-id': uploadId,
         'x-mpu-part-number': part.partNumber.toString(),
       },
       // weird things between undici types and native fetch types
-      body: part.blob as BodyInit,
-      // required in order to stream some body types to Cloudflare
-      // currently only supported in Node.js, we may have to feature detect this
-      // note: this doesn't send a content-length to the server
-      duplex: 'half',
+      body: part.blob,
     },
     options,
   );
@@ -119,11 +116,11 @@ export async function uploadPart({
   return response;
 }
 
-// Most browsers will cap requests at 6 concurrent uploads per domain (Vercel Blob API domain)
+// Most browsers will cap requests at 6 concurrent uploads per domain (Khulnasoft Blob API domain)
 // In other environments, we can afford to be more aggressive
 const maxConcurrentUploads = typeof window !== 'undefined' ? 6 : 8;
 
-// 5MB is the minimum part size accepted by Vercel Blob, but we set our default part size to 8mb like the aws cli
+// 5MB is the minimum part size accepted by Khulnasoft Blob, but we set our default part size to 8mb like the aws cli
 const partSizeInBytes = 8 * 1024 * 1024;
 
 const maxBytesInMemory = maxConcurrentUploads * partSizeInBytes * 2;
@@ -145,13 +142,15 @@ export function uploadAllParts({
   stream,
   headers,
   options,
+  totalToLoad,
 }: {
   uploadId: string;
   key: string;
   pathname: string;
   stream: ReadableStream<ArrayBuffer>;
   headers: Record<string, string>;
-  options: BlobCommandOptions;
+  options: BlobCommandOptions & WithUploadProgress;
+  totalToLoad: number;
 }): Promise<Part[]> {
   debug('mpu: upload init', 'key:', key);
   const internalAbortController = new AbortController();
@@ -173,6 +172,28 @@ export function uploadAllParts({
     // we exit the loop but some bytes are still to be sent on the next read invocation.
     let arrayBuffers: ArrayBuffer[] = [];
     let currentPartBytesRead = 0;
+
+    let onUploadProgress: (() => void) | undefined;
+    const totalLoadedPerPartNumber: Record<string, number> = {};
+
+    if (options.onUploadProgress) {
+      onUploadProgress = throttle(() => {
+        const loaded = Object.values(totalLoadedPerPartNumber).reduce(
+          (acc, cur) => {
+            return acc + cur;
+          },
+          0,
+        );
+        const total = totalToLoad || loaded;
+        const percentage =
+          totalToLoad > 0
+            ? Number(((loaded / totalToLoad || loaded) * 100).toFixed(2))
+            : 0;
+
+        // we call the user's onUploadProgress callback
+        options.onUploadProgress?.({ loaded, total, percentage });
+      }, 150);
+    }
 
     read().catch(cancel);
 
@@ -279,12 +300,25 @@ export function uploadAllParts({
       );
 
       try {
+        const uploadProgressForPart: WithUploadProgress['onUploadProgress'] =
+          options.onUploadProgress
+            ? (event) => {
+                totalLoadedPerPartNumber[part.partNumber] = event.loaded;
+                if (onUploadProgress) {
+                  onUploadProgress();
+                }
+              }
+            : undefined;
+
         const completedPart = await uploadPart({
           uploadId,
           key,
           pathname,
           headers,
-          options,
+          options: {
+            ...options,
+            onUploadProgress: uploadProgressForPart,
+          },
           internalAbortController,
           part,
         });

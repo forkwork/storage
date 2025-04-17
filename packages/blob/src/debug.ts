@@ -16,6 +16,6 @@ try {
 export function debug(message: string, ...args: unknown[]): void {
   if (debugIsActive) {
     // eslint-disable-next-line no-console -- Ok for debugging
-    console.debug(`vercel-blob: ${message}`, ...args);
+    console.debug(`khulnasoft-blob: ${message}`, ...args);
   }
 }

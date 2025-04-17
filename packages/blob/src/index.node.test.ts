@@ -11,8 +11,9 @@ import {
   completeMultipartUpload,
 } from './index';
 
-const BLOB_API_URL = 'https://blob.vercel-storage.com';
-const BLOB_STORE_BASE_URL = 'https://storeId.public.blob.vercel-storage.com';
+const BLOB_API_URL = 'https://blob.khulnasoft-storage.com';
+const BLOB_STORE_BASE_URL =
+  'https://storeId.public.blob.khulnasoft-storage.com';
 
 const mockedFileMeta = {
   url: `${BLOB_STORE_BASE_URL}/foo-id.txt`,
@@ -29,14 +30,14 @@ describe('blob client', () => {
 
   beforeEach(() => {
     process.env.BLOB_READ_WRITE_TOKEN =
-      'vercel_blob_rw_12345fakeStoreId_30FakeRandomCharacters12345678';
+      'khulnasoft_blob_rw_12345fakeStoreId_30FakeRandomCharacters12345678';
     const mockAgent = new MockAgent();
     mockAgent.disableNetConnect();
     setGlobalDispatcher(mockAgent);
     mockClient = mockAgent.get(BLOB_API_URL);
     jest.resetAllMocks();
 
-    process.env.VERCEL_BLOB_RETRIES = '0';
+    process.env.KHULNASOFT_BLOB_RETRIES = '0';
   });
 
   describe('head', () => {
@@ -60,18 +61,18 @@ describe('blob client', () => {
                 "cacheControl": undefined,
                 "contentDisposition": "attachment; filename="foo.txt"",
                 "contentType": "text/plain",
-                "downloadUrl": "https://storeId.public.blob.vercel-storage.com/foo-id.txt?download=1",
+                "downloadUrl": "https://storeId.public.blob.khulnasoft-storage.com/foo-id.txt?download=1",
                 "pathname": "foo.txt",
                 "size": 12345,
                 "uploadedAt": 2023-05-04T15:12:07.818Z,
-                "url": "https://storeId.public.blob.vercel-storage.com/foo-id.txt",
+                "url": "https://storeId.public.blob.khulnasoft-storage.com/foo-id.txt",
               }
           `);
       expect(path).toEqual(
-        '/?url=https%3A%2F%2FstoreId.public.blob.vercel-storage.com%2Ffoo-id.txt',
+        '/?url=https%3A%2F%2FstoreId.public.blob.khulnasoft-storage.com%2Ffoo-id.txt',
       );
       expect(headers.authorization).toEqual(
-        'Bearer vercel_blob_rw_12345fakeStoreId_30FakeRandomCharacters12345678',
+        'Bearer khulnasoft_blob_rw_12345fakeStoreId_30FakeRandomCharacters12345678',
       );
     });
 
@@ -84,7 +85,7 @@ describe('blob client', () => {
         .reply(404, { error: { code: 'not_found', message: 'Not found' } });
 
       await expect(head(`${BLOB_STORE_BASE_URL}/foo-id.txt`)).rejects.toThrow(
-        new Error('Vercel Blob: The requested blob does not exist'),
+        new Error('Khulnasoft Blob: The requested blob does not exist'),
       );
     });
 
@@ -98,7 +99,7 @@ describe('blob client', () => {
 
       await expect(head(`${BLOB_STORE_BASE_URL}/foo-id.txt`)).rejects.toThrow(
         new Error(
-          'Vercel Blob: Access denied, please provide a valid token for this resource.',
+          'Khulnasoft Blob: Access denied, please provide a valid token for this resource.',
         ),
       );
     });
@@ -113,7 +114,7 @@ describe('blob client', () => {
 
       await expect(head(`${BLOB_STORE_BASE_URL}/foo-id.txt`)).rejects.toThrow(
         new Error(
-          'Vercel Blob: Unknown error, please visit https://vercel.com/help.',
+          'Khulnasoft Blob: Unknown error, please visit https://khulnasoft.com/help.',
         ),
       );
     });
@@ -123,7 +124,7 @@ describe('blob client', () => {
 
       await expect(head(`${BLOB_STORE_BASE_URL}/foo-id.txt`)).rejects.toThrow(
         new Error(
-          'Vercel Blob: No token found. Either configure the `BLOB_READ_WRITE_TOKEN` environment variable, or pass a `token` option to your calls.',
+          'Khulnasoft Blob: No token found. Either configure the `BLOB_READ_WRITE_TOKEN` environment variable, or pass a `token` option to your calls.',
         ),
       );
     });
@@ -137,7 +138,7 @@ describe('blob client', () => {
         .reply(403, { error: { code: 'store_suspended' } });
 
       await expect(head(`${BLOB_STORE_BASE_URL}/foo-id.txt`)).rejects.toThrow(
-        new Error('Vercel Blob: This store has been suspended.'),
+        new Error('Khulnasoft Blob: This store has been suspended.'),
       );
     });
 
@@ -150,7 +151,7 @@ describe('blob client', () => {
         .reply(403, { error: { code: 'store_not_found' } });
 
       await expect(head(`${BLOB_STORE_BASE_URL}/foo-id.txt`)).rejects.toThrow(
-        new Error('Vercel Blob: This store does not exist.'),
+        new Error('Khulnasoft Blob: This store does not exist.'),
       );
     });
 
@@ -191,10 +192,10 @@ describe('blob client', () => {
 
       expect(path).toEqual('/delete');
       expect(headers.authorization).toEqual(
-        'Bearer vercel_blob_rw_12345fakeStoreId_30FakeRandomCharacters12345678',
+        'Bearer khulnasoft_blob_rw_12345fakeStoreId_30FakeRandomCharacters12345678',
       );
       expect(body).toMatchInlineSnapshot(
-        `"{"urls":["https://storeId.public.blob.vercel-storage.com/foo-id.txt"]}"`,
+        `"{"urls":["https://storeId.public.blob.khulnasoft-storage.com/foo-id.txt"]}"`,
       );
     });
 
@@ -222,10 +223,10 @@ describe('blob client', () => {
       ).resolves.toBeUndefined();
       expect(path).toEqual('/delete');
       expect(headers.authorization).toEqual(
-        'Bearer vercel_blob_rw_12345fakeStoreId_30FakeRandomCharacters12345678',
+        'Bearer khulnasoft_blob_rw_12345fakeStoreId_30FakeRandomCharacters12345678',
       );
       expect(body).toMatchInlineSnapshot(
-        `"{"urls":["https://storeId.public.blob.vercel-storage.com/foo-id1.txt","https://storeId.public.blob.vercel-storage.com/foo-id2.txt"]}"`,
+        `"{"urls":["https://storeId.public.blob.khulnasoft-storage.com/foo-id1.txt","https://storeId.public.blob.khulnasoft-storage.com/foo-id2.txt"]}"`,
       );
     });
 
@@ -239,7 +240,7 @@ describe('blob client', () => {
 
       await expect(del(`${BLOB_STORE_BASE_URL}/foo-id.txt`)).rejects.toThrow(
         new Error(
-          'Vercel Blob: Access denied, please provide a valid token for this resource.',
+          'Khulnasoft Blob: Access denied, please provide a valid token for this resource.',
         ),
       );
     });
@@ -254,7 +255,7 @@ describe('blob client', () => {
 
       await expect(del(`${BLOB_STORE_BASE_URL}/foo-id.txt`)).rejects.toThrow(
         new Error(
-          'Vercel Blob: Unknown error, please visit https://vercel.com/help.',
+          'Khulnasoft Blob: Unknown error, please visit https://khulnasoft.com/help.',
         ),
       );
     });
@@ -293,18 +294,18 @@ describe('blob client', () => {
         {
           "blobs": [
             {
-              "downloadUrl": "https://storeId.public.blob.vercel-storage.com/foo-id.txt?download=1",
+              "downloadUrl": "https://storeId.public.blob.khulnasoft-storage.com/foo-id.txt?download=1",
               "pathname": "foo.txt",
               "size": 12345,
               "uploadedAt": 2023-05-04T15:12:07.818Z,
-              "url": "https://storeId.public.blob.vercel-storage.com/foo-id.txt",
+              "url": "https://storeId.public.blob.khulnasoft-storage.com/foo-id.txt",
             },
             {
-              "downloadUrl": "https://storeId.public.blob.vercel-storage.com/foo-id.txt?download=1",
+              "downloadUrl": "https://storeId.public.blob.khulnasoft-storage.com/foo-id.txt?download=1",
               "pathname": "foo.txt",
               "size": 12345,
               "uploadedAt": 2023-05-04T15:12:07.818Z,
-              "url": "https://storeId.public.blob.vercel-storage.com/foo-id.txt",
+              "url": "https://storeId.public.blob.khulnasoft-storage.com/foo-id.txt",
             },
           ],
           "cursor": "cursor-123",
@@ -313,7 +314,7 @@ describe('blob client', () => {
       `);
       expect(path).toBe('/?limit=10&prefix=test-prefix&cursor=cursor-abc');
       expect(headers.authorization).toEqual(
-        'Bearer vercel_blob_rw_12345fakeStoreId_30FakeRandomCharacters12345678',
+        'Bearer khulnasoft_blob_rw_12345fakeStoreId_30FakeRandomCharacters12345678',
       );
     });
 
@@ -327,7 +328,7 @@ describe('blob client', () => {
 
       await expect(list()).rejects.toThrow(
         new Error(
-          'Vercel Blob: Access denied, please provide a valid token for this resource.',
+          'Khulnasoft Blob: Access denied, please provide a valid token for this resource.',
         ),
       );
     });
@@ -341,7 +342,7 @@ describe('blob client', () => {
         .reply(500, 'Invalid token');
       await expect(list()).rejects.toThrow(
         new Error(
-          'Vercel Blob: Unknown error, please visit https://vercel.com/help.',
+          'Khulnasoft Blob: Unknown error, please visit https://khulnasoft.com/help.',
         ),
       );
     });
@@ -367,11 +368,11 @@ describe('blob client', () => {
         {
           "blobs": [
             {
-              "downloadUrl": "https://storeId.public.blob.vercel-storage.com/foo-id.txt?download=1",
+              "downloadUrl": "https://storeId.public.blob.khulnasoft-storage.com/foo-id.txt?download=1",
               "pathname": "foo.txt",
               "size": 12345,
               "uploadedAt": 2023-05-04T15:12:07.818Z,
-              "url": "https://storeId.public.blob.vercel-storage.com/foo-id.txt",
+              "url": "https://storeId.public.blob.khulnasoft-storage.com/foo-id.txt",
             },
           ],
           "cursor": undefined,
@@ -395,6 +396,35 @@ describe('blob client', () => {
       contentType: mockedFileMeta.contentType,
       contentDisposition: mockedFileMeta.contentDisposition,
     };
+
+    it('has an onUploadProgress option', async () => {
+      mockClient
+        .intercept({
+          path: () => true,
+          method: 'PUT',
+        })
+        .reply(200, () => {
+          return mockedFileMetaPut;
+        });
+
+      const onUploadProgress = jest.fn();
+
+      await expect(
+        put('progress.txt', 'Test Body', {
+          access: 'public',
+          onUploadProgress,
+        }),
+      ).resolves.toMatchInlineSnapshot(`
+        {
+          "contentDisposition": "attachment; filename="foo.txt"",
+          "contentType": "text/plain",
+          "downloadUrl": "https://storeId.public.blob.khulnasoft-storage.com/foo-id.txt?download=1",
+          "pathname": "foo.txt",
+          "url": "https://storeId.public.blob.khulnasoft-storage.com/foo-id.txt",
+        }
+      `);
+      expect(onUploadProgress).toHaveBeenCalledTimes(1);
+    });
 
     it('should upload a file with a custom token', async () => {
       let path: string | null = null;
@@ -421,12 +451,12 @@ describe('blob client', () => {
         {
           "contentDisposition": "attachment; filename="foo.txt"",
           "contentType": "text/plain",
-          "downloadUrl": "https://storeId.public.blob.vercel-storage.com/foo-id.txt?download=1",
+          "downloadUrl": "https://storeId.public.blob.khulnasoft-storage.com/foo-id.txt?download=1",
           "pathname": "foo.txt",
-          "url": "https://storeId.public.blob.vercel-storage.com/foo-id.txt",
+          "url": "https://storeId.public.blob.khulnasoft-storage.com/foo-id.txt",
         }
       `);
-      expect(path).toBe('/foo.txt');
+      expect(path).toBe('/?pathname=foo.txt');
       expect(headers.authorization).toEqual('Bearer NEW_TOKEN');
       expect(body).toMatchInlineSnapshot(`"Test Body"`);
     });
@@ -466,7 +496,7 @@ describe('blob client', () => {
         }),
       ).rejects.toThrow(
         new Error(
-          'Vercel Blob: Access denied, please provide a valid token for this resource.',
+          'Khulnasoft Blob: Access denied, please provide a valid token for this resource.',
         ),
       );
     });
@@ -485,7 +515,7 @@ describe('blob client', () => {
         }),
       ).rejects.toThrow(
         new Error(
-          'Vercel Blob: Unknown error, please visit https://vercel.com/help.',
+          'Khulnasoft Blob: Unknown error, please visit https://khulnasoft.com/help.',
         ),
       );
     });
@@ -502,7 +532,7 @@ describe('blob client', () => {
         put('', 'Test Body', {
           access: 'public',
         }),
-      ).rejects.toThrow(new Error('Vercel Blob: pathname is required'));
+      ).rejects.toThrow(new Error('Khulnasoft Blob: pathname is required'));
     });
 
     it('should fail when the body is missing', async () => {
@@ -517,7 +547,7 @@ describe('blob client', () => {
         put('path.txt', '', {
           access: 'public',
         }),
-      ).rejects.toThrow(new Error('Vercel Blob: body is required'));
+      ).rejects.toThrow(new Error('Khulnasoft Blob: body is required'));
     });
 
     it('should throw when uploading a private file', async () => {
@@ -533,7 +563,7 @@ describe('blob client', () => {
           // @ts-expect-error: access is only public for now, testing that a different value throws
           access: 'private',
         }),
-      ).rejects.toThrow(new Error('Vercel Blob: access must be "public"'));
+      ).rejects.toThrow(new Error('Khulnasoft Blob: access must be "public"'));
     });
 
     it('sets the correct header when using the addRandomSuffix option', async () => {
@@ -582,30 +612,8 @@ describe('blob client', () => {
           access: 'public',
         }),
       ).rejects.toThrow(
-        new Error('Vercel Blob: pathname is too long, maximum length is 950'),
-      );
-    });
-
-    it('throws when pathname contains #', async () => {
-      await expect(
-        put('foo#bar.txt', 'Test Body', {
-          access: 'public',
-        }),
-      ).rejects.toThrow(
         new Error(
-          'Vercel Blob: pathname cannot contain "#", please encode it if needed',
-        ),
-      );
-    });
-
-    it('throws when pathname contains ?', async () => {
-      await expect(
-        put('foo?bar.txt', 'Test Body', {
-          access: 'public',
-        }),
-      ).rejects.toThrow(
-        new Error(
-          'Vercel Blob: pathname cannot contain "?", please encode it if needed',
+          'Khulnasoft Blob: pathname is too long, maximum length is 950',
         ),
       );
     });
@@ -617,7 +625,7 @@ describe('blob client', () => {
         }),
       ).rejects.toThrow(
         new Error(
-          'Vercel Blob: pathname cannot contain "//", please encode it if needed',
+          'Khulnasoft Blob: pathname cannot contain "//", please encode it if needed',
         ),
       );
     });
@@ -669,7 +677,7 @@ describe('blob client', () => {
       [
         'del',
         (abortSignal) =>
-          del('https://mystore.public.blob.vercel-storage.com/file.txt', {
+          del('https://mystore.public.blob.khulnasoft-storage.com/file.txt', {
             abortSignal,
           }),
       ],
@@ -685,7 +693,7 @@ describe('blob client', () => {
       [
         'head',
         (abortSignal) =>
-          head('https://mystore.public.blob.vercel-storage.com/file.txt', {
+          head('https://mystore.public.blob.khulnasoft-storage.com/file.txt', {
             abortSignal,
           }),
       ],
@@ -742,7 +750,7 @@ describe('blob client', () => {
     it.each(testCases)('on %s', async (_, operation) => {
       await expect(operation).rejects.toThrow(
         new Error(
-          "Vercel Blob: Body must be a string, buffer or stream. You sent a plain JavaScript object, double check what you're trying to upload.",
+          "Khulnasoft Blob: Body must be a string, buffer or stream. You sent a plain JavaScript object, double check what you're trying to upload.",
         ),
       );
     });
@@ -755,7 +763,9 @@ describe('blob client', () => {
           access: 'public',
         }),
       ).rejects.toThrow(
-        new Error('Vercel Blob: pathname is too long, maximum length is 950'),
+        new Error(
+          'Khulnasoft Blob: pathname is too long, maximum length is 950',
+        ),
       );
     });
   });

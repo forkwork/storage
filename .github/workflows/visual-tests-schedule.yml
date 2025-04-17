@@ -52,10 +52,10 @@ jobs:
       # Using ./test/next... is mandatory so we are not subject to playwright surprise updates
       - run: ./test/next/node_modules/.bin/playwright install --with-deps
 
-      - name: Run Playwright tests on https://storage-rho.vercel.app/
+      - name: Run Playwright tests on https://storage-rho.khulnasoft.app/
         run: pnpm integration-test
         env:
-          PLAYWRIGHT_TEST_BASE_URL: ${{inputs.PLAYWRIGHT_TEST_BASE_URL || 'https://storage-rho.vercel.app' }}
+          PLAYWRIGHT_TEST_BASE_URL: ${{inputs.PLAYWRIGHT_TEST_BASE_URL || 'https://storage-rho.khulnasoft.app' }}
       - name: Datadog report Fail
         uses: masci/datadog@v1
         if: failure()

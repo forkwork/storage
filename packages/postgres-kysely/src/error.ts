@@ -1,13 +1,13 @@
-type VercelPostgresKyselyErrorCode =
+type KhulnasoftPostgresKyselyErrorCode =
   | 'kysely_transactions_not_supported'
   | 'kysely_streaming_not_supported';
 
-export class VercelPostgresKyselyError extends Error {
+export class KhulnasoftPostgresKyselyError extends Error {
   public constructor(
-    public code: VercelPostgresKyselyErrorCode,
+    public code: KhulnasoftPostgresKyselyErrorCode,
     message: string,
   ) {
-    super(`VercelPostgresError - '${code}': ${message}`);
-    this.name = 'VercelPostgresError';
+    super(`KhulnasoftPostgresError - '${code}': ${message}`);
+    this.name = 'KhulnasoftPostgresError';
   }
 }

@@ -1,14 +1,18 @@
 module.exports = {
   root: true,
   extends: [
-    require.resolve('@vercel/style-guide/eslint/node'),
-    require.resolve('@vercel/style-guide/eslint/react'),
-    require.resolve('@vercel/style-guide/eslint/next'),
-    require.resolve('@vercel/style-guide/eslint/typescript'),
+    require.resolve('@khulnasoft/style-guide/eslint/node'),
+    require.resolve('@khulnasoft/style-guide/eslint/react'),
+    require.resolve('@khulnasoft/style-guide/eslint/next'),
+    require.resolve('@khulnasoft/style-guide/eslint/typescript'),
   ],
   parserOptions: {
     project: ['./tsconfig.json'],
     tsconfigRootDir: __dirname,
+  },
+  rules: {
+    'no-console': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
   },
   overrides: [
     {
@@ -24,7 +28,7 @@ module.exports = {
     },
     {
       files: ['**/*.test.*'],
-      extends: [require.resolve('@vercel/style-guide/eslint/jest')],
+      extends: [require.resolve('@khulnasoft/style-guide/eslint/jest')],
     },
     {
       files: ['**/*.tsx', '**/*.ts'],

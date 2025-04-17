@@ -1,5 +1,9 @@
 // eslint-disable-next-line unicorn/prefer-node-protocol -- node:stream does not resolve correctly in browser and edge
 import type { Readable } from 'stream';
+// We use the undici types to ensure TS doesn't complain about native types (like ReadableStream) vs
+// undici types fetch expects (like Blob is from node:buffer..)
+// import type { Blob } from 'node:buffer';
+import type { File } from 'undici';
 import type { ClientCommonCreateBlobOptions } from './client';
 import type { CommonCreateBlobOptions } from './helpers';
 import { BlobError, disallowedPathnameCharacters } from './helpers';
@@ -8,6 +12,7 @@ import { MAXIMUM_PATHNAME_LENGTH } from './api';
 export const putOptionHeaderMap = {
   cacheControlMaxAge: 'x-cache-control-max-age',
   addRandomSuffix: 'x-add-random-suffix',
+  allowOverwrite: 'x-allow-overwrite',
   contentType: 'x-content-type',
 };
 
@@ -15,7 +20,7 @@ export interface PutBlobResult {
   url: string;
   downloadUrl: string;
   pathname: string;
-  contentType?: string;
+  contentType: string;
   contentDisposition: string;
 }
 
@@ -54,6 +59,15 @@ export function createPutHeaders<TOptions extends CommonPutCommandOptions>(
     options.addRandomSuffix !== undefined
   ) {
     headers[putOptionHeaderMap.addRandomSuffix] = options.addRandomSuffix
+      ? '1'
+      : '0';
+  }
+
+  if (
+    allowedOptions.includes('allowOverwrite') &&
+    options.allowOverwrite !== undefined
+  ) {
+    headers[putOptionHeaderMap.allowOverwrite] = options.allowOverwrite
       ? '1'
       : '0';
   }

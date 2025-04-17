@@ -2,7 +2,8 @@ import { put } from './index';
 
 // This files ensures some of the Node.js methods can also be called when imported in a browser
 
-const BLOB_STORE_BASE_URL = 'https://storeId.public.blob.vercel-storage.com';
+const BLOB_STORE_BASE_URL =
+  'https://storeId.public.blob.khulnasoft-storage.com';
 
 // Can't use the usual undici mocking utilities because they don't work with jsdom environment
 jest.mock('undici', () => ({
@@ -35,15 +36,15 @@ describe('blob client', () => {
       await expect(
         put('foo.txt', 'Test Body', {
           access: 'public',
-          token: 'vercel_blob_client_123_token',
+          token: 'khulnasoft_blob_client_123_token',
         }),
       ).resolves.toMatchInlineSnapshot(`
         {
           "contentDisposition": "attachment; filename="foo.txt"",
           "contentType": "text/plain",
-          "downloadUrl": "https://storeId.public.blob.vercel-storage.com/foo-id.txt?download=1",
+          "downloadUrl": "https://storeId.public.blob.khulnasoft-storage.com/foo-id.txt?download=1",
           "pathname": "foo.txt",
-          "url": "https://storeId.public.blob.vercel-storage.com/foo-id.txt",
+          "url": "https://storeId.public.blob.khulnasoft-storage.com/foo-id.txt",
         }
       `);
     });

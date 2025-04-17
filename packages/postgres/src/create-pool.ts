@@ -4,22 +4,25 @@ import type {
   QueryResultRow,
 } from '@neondatabase/serverless';
 import { Pool, neon } from '@neondatabase/serverless';
-import type { VercelPoolClient, VercelPostgresPoolConfig } from './types';
+import type {
+  KhulnasoftPoolClient,
+  KhulnasoftPostgresPoolConfig,
+} from './types';
 import {
   isLocalhostConnectionString,
   isPooledConnectionString,
   postgresConnectionString,
 } from './postgres-connection-string';
-import { VercelPostgresError } from './error';
+import { KhulnasoftPostgresError } from './error';
 import type { Primitive } from './sql-template';
 import { sqlTemplate } from './sql-template';
-import { VercelClient } from './create-client';
+import { KhulnasoftClient } from './create-client';
 
-export class VercelPool extends Pool {
-  Client = VercelClient;
+export class KhulnasoftPool extends Pool {
+  Client = KhulnasoftClient;
   private connectionString: string;
 
-  constructor(config: VercelPostgresPoolConfig) {
+  constructor(config: KhulnasoftPostgresPoolConfig) {
     super(config);
     this.connectionString = config.connectionString ?? '';
   }
@@ -49,41 +52,43 @@ export class VercelPool extends Pool {
     return sql(query, params) as unknown as Promise<QueryResult<O>>;
   }
 
-  connect(): Promise<VercelPoolClient>;
+  connect(): Promise<KhulnasoftPoolClient>;
   connect(
     callback: (
       err: Error,
-      client: VercelPoolClient,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- [@vercel/style-guide@5 migration]
+      client: KhulnasoftPoolClient,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- [@khulnasoft/style-guide@5 migration]
       done: (release?: any) => void,
     ) => void,
   ): void;
   connect(
     callback?: (
       err: Error,
-      client: VercelPoolClient,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- [@vercel/style-guide@5 migration]
+      client: KhulnasoftPoolClient,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- [@khulnasoft/style-guide@5 migration]
       done: (release?: any) => void,
     ) => void,
-    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type -- [@vercel/style-guide@5 migration]
-  ): void | Promise<VercelPoolClient> {
-    // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression -- [@vercel/style-guide@5 migration]
+    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type -- [@khulnasoft/style-guide@5 migration]
+  ): void | Promise<KhulnasoftPoolClient> {
+    // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression -- [@khulnasoft/style-guide@5 migration]
     return super.connect(
       callback as (
         err: Error,
         client: PoolClient,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- [@vercel/style-guide@5 migration]
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- [@khulnasoft/style-guide@5 migration]
         done: (release?: any) => void,
       ) => void,
     );
   }
 }
 
-export function createPool(config?: VercelPostgresPoolConfig): VercelPool {
+export function createPool(
+  config?: KhulnasoftPostgresPoolConfig,
+): KhulnasoftPool {
   const connectionString =
     config?.connectionString ?? postgresConnectionString('pool');
   if (!connectionString)
-    throw new VercelPostgresError(
+    throw new KhulnasoftPostgresError(
       'missing_connection_string',
       "You did not supply a 'connectionString' and no 'POSTGRES_URL' env var was found.",
     );
@@ -92,7 +97,7 @@ export function createPool(config?: VercelPostgresPoolConfig): VercelPool {
     !isLocalhostConnectionString(connectionString) &&
     !isPooledConnectionString(connectionString)
   )
-    throw new VercelPostgresError(
+    throw new KhulnasoftPostgresError(
       'invalid_connection_string',
       'This connection string is meant to be used with a direct connection. Make sure to use a pooled connection string or try `createClient()` instead.',
     );
@@ -101,13 +106,13 @@ export function createPool(config?: VercelPostgresPoolConfig): VercelPool {
   let max = config?.max;
   if (typeof EdgeRuntime !== 'undefined') {
     if (maxUses && maxUses !== 1) {
-      // eslint-disable-next-line no-console -- [@vercel/style-guide@5 migration]
+      // eslint-disable-next-line no-console -- [@khulnasoft/style-guide@5 migration]
       console.warn(
         '@khulnasoft/postgres: Overriding `maxUses` to 1 because the EdgeRuntime does not support client reuse.',
       );
     }
     if (max && max !== 10_000) {
-      // eslint-disable-next-line no-console -- [@vercel/style-guide@5 migration]
+      // eslint-disable-next-line no-console -- [@khulnasoft/style-guide@5 migration]
       console.warn(
         '@khulnasoft/postgres: Overriding `max` to 10,000 because the EdgeRuntime does not support client reuse.',
       );
@@ -121,7 +126,7 @@ export function createPool(config?: VercelPostgresPoolConfig): VercelPool {
     max = 10_000;
   }
 
-  const pool = new VercelPool({
+  const pool = new KhulnasoftPool({
     ...config,
     connectionString,
     maxUses,

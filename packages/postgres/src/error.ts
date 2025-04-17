@@ -1,15 +1,15 @@
-type VercelPostgresErrorCode =
+type KhulnasoftPostgresErrorCode =
   | 'invalid_connection_string'
   | 'missing_connection_string'
   | 'invalid_connection_type'
   | 'incorrect_tagged_template_call';
 
-export class VercelPostgresError extends Error {
+export class KhulnasoftPostgresError extends Error {
   public constructor(
-    public code: VercelPostgresErrorCode,
+    public code: KhulnasoftPostgresErrorCode,
     message: string,
   ) {
-    super(`VercelPostgresError - '${code}': ${message}`);
-    this.name = 'VercelPostgresError';
+    super(`KhulnasoftPostgresError - '${code}': ${message}`);
+    this.name = 'KhulnasoftPostgresError';
   }
 }

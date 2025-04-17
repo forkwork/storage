@@ -4,7 +4,7 @@ import { cache } from './utils/fetch-with-cached-response';
 import { get, has, digest, getAll, createClient } from './index';
 
 const sdkVersion = typeof pkgVersion === 'string' ? pkgVersion : '';
-const baseUrl = 'https://edge-config.vercel.com/ecfg-1';
+const baseUrl = 'https://edge-config.khulnasoft.com/ecfg-1';
 
 describe('default Edge Config', () => {
   beforeEach(() => {
@@ -15,7 +15,7 @@ describe('default Edge Config', () => {
   describe('test conditions', () => {
     it('should have an env var called EDGE_CONFIG', () => {
       expect(process.env.EDGE_CONFIG).toEqual(
-        'https://edge-config.vercel.com/ecfg-1?token=token-1',
+        'https://edge-config.khulnasoft.com/ecfg-1?token=token-1',
       );
     });
   });
@@ -29,7 +29,7 @@ describe('default Edge Config', () => {
     expect(fetchMock).toHaveBeenCalledWith(`${baseUrl}/item/foo?version=1`, {
       headers: new Headers({
         Authorization: 'Bearer token-1',
-        'x-edge-config-vercel-env': 'test',
+        'x-edge-config-khulnasoft-env': 'test',
         'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
         'cache-control': 'stale-if-error=604800',
       }),
@@ -50,7 +50,7 @@ describe('default Edge Config', () => {
           {
             headers: new Headers({
               Authorization: 'Bearer token-1',
-              'x-edge-config-vercel-env': 'test',
+              'x-edge-config-khulnasoft-env': 'test',
               'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
               'cache-control': 'stale-if-error=604800',
             }),
@@ -86,7 +86,7 @@ describe('default Edge Config', () => {
           {
             headers: new Headers({
               Authorization: 'Bearer token-1',
-              'x-edge-config-vercel-env': 'test',
+              'x-edge-config-khulnasoft-env': 'test',
               'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
               'cache-control': 'stale-if-error=604800',
             }),
@@ -118,7 +118,7 @@ describe('default Edge Config', () => {
           {
             headers: new Headers({
               Authorization: 'Bearer token-1',
-              'x-edge-config-vercel-env': 'test',
+              'x-edge-config-khulnasoft-env': 'test',
               'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
               'cache-control': 'stale-if-error=604800',
             }),
@@ -140,7 +140,7 @@ describe('default Edge Config', () => {
           {
             headers: new Headers({
               Authorization: 'Bearer token-1',
-              'x-edge-config-vercel-env': 'test',
+              'x-edge-config-khulnasoft-env': 'test',
               'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
               'cache-control': 'stale-if-error=604800',
             }),
@@ -164,7 +164,7 @@ describe('default Edge Config', () => {
           {
             headers: new Headers({
               Authorization: 'Bearer token-1',
-              'x-edge-config-vercel-env': 'test',
+              'x-edge-config-khulnasoft-env': 'test',
               'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
               'cache-control': 'stale-if-error=604800',
             }),
@@ -186,7 +186,7 @@ describe('default Edge Config', () => {
         expect(fetchMock).toHaveBeenCalledWith(`${baseUrl}/items?version=1`, {
           headers: new Headers({
             Authorization: 'Bearer token-1',
-            'x-edge-config-vercel-env': 'test',
+            'x-edge-config-khulnasoft-env': 'test',
             'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
             'cache-control': 'stale-if-error=604800',
           }),
@@ -210,7 +210,7 @@ describe('default Edge Config', () => {
           {
             headers: new Headers({
               Authorization: 'Bearer token-1',
-              'x-edge-config-vercel-env': 'test',
+              'x-edge-config-khulnasoft-env': 'test',
               'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
               'cache-control': 'stale-if-error=604800',
             }),
@@ -257,7 +257,7 @@ describe('default Edge Config', () => {
           {
             headers: new Headers({
               Authorization: 'Bearer token-1',
-              'x-edge-config-vercel-env': 'test',
+              'x-edge-config-khulnasoft-env': 'test',
               'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
               'cache-control': 'stale-if-error=604800',
             }),
@@ -277,7 +277,7 @@ describe('default Edge Config', () => {
         expect(fetchMock).toHaveBeenCalledWith(`${baseUrl}/items?version=1`, {
           headers: new Headers({
             Authorization: 'Bearer token-1',
-            'x-edge-config-vercel-env': 'test',
+            'x-edge-config-khulnasoft-env': 'test',
             'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
             'cache-control': 'stale-if-error=604800',
           }),
@@ -298,7 +298,7 @@ describe('default Edge Config', () => {
         expect(fetchMock).toHaveBeenCalledWith(`${baseUrl}/items?version=1`, {
           headers: new Headers({
             Authorization: 'Bearer token-1',
-            'x-edge-config-vercel-env': 'test',
+            'x-edge-config-khulnasoft-env': 'test',
             'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
             'cache-control': 'stale-if-error=604800',
           }),
@@ -322,7 +322,7 @@ describe('default Edge Config', () => {
             method: 'HEAD',
             headers: new Headers({
               Authorization: 'Bearer token-1',
-              'x-edge-config-vercel-env': 'test',
+              'x-edge-config-khulnasoft-env': 'test',
               'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
               'cache-control': 'stale-if-error=604800',
             }),
@@ -359,7 +359,7 @@ describe('default Edge Config', () => {
             method: 'HEAD',
             headers: new Headers({
               Authorization: 'Bearer token-1',
-              'x-edge-config-vercel-env': 'test',
+              'x-edge-config-khulnasoft-env': 'test',
               'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
               'cache-control': 'stale-if-error=604800',
             }),
@@ -392,7 +392,7 @@ describe('default Edge Config', () => {
             method: 'HEAD',
             headers: new Headers({
               Authorization: 'Bearer token-1',
-              'x-edge-config-vercel-env': 'test',
+              'x-edge-config-khulnasoft-env': 'test',
               'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
               'cache-control': 'stale-if-error=604800',
             }),
@@ -414,7 +414,7 @@ describe('default Edge Config', () => {
         expect(fetchMock).toHaveBeenCalledWith(`${baseUrl}/digest?version=1`, {
           headers: new Headers({
             Authorization: 'Bearer token-1',
-            'x-edge-config-vercel-env': 'test',
+            'x-edge-config-khulnasoft-env': 'test',
             'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
             'cache-control': 'stale-if-error=604800',
           }),
@@ -435,7 +435,7 @@ describe('default Edge Config', () => {
         expect(fetchMock).toHaveBeenCalledWith(`${baseUrl}/digest?version=1`, {
           headers: new Headers({
             Authorization: 'Bearer token-1',
-            'x-edge-config-vercel-env': 'test',
+            'x-edge-config-khulnasoft-env': 'test',
             'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
             'cache-control': 'stale-if-error=604800',
           }),
@@ -454,7 +454,7 @@ describe('default Edge Config', () => {
         expect(fetchMock).toHaveBeenCalledWith(`${baseUrl}/digest?version=1`, {
           headers: new Headers({
             Authorization: 'Bearer token-1',
-            'x-edge-config-vercel-env': 'test',
+            'x-edge-config-khulnasoft-env': 'test',
             'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
             'cache-control': 'stale-if-error=604800',
           }),
@@ -473,7 +473,7 @@ describe('default Edge Config', () => {
         expect(fetchMock).toHaveBeenCalledWith(`${baseUrl}/digest?version=1`, {
           headers: new Headers({
             Authorization: 'Bearer token-1',
-            'x-edge-config-vercel-env': 'test',
+            'x-edge-config-khulnasoft-env': 'test',
             'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
             'cache-control': 'stale-if-error=604800',
           }),
@@ -504,7 +504,7 @@ describe('createClient', () => {
       expect(fetchMock).toHaveBeenCalledWith(`${baseUrl}/item/foo?version=1`, {
         headers: new Headers({
           Authorization: 'Bearer token-1',
-          'x-edge-config-vercel-env': 'test',
+          'x-edge-config-khulnasoft-env': 'test',
           'x-edge-config-sdk': `@khulnasoft/edge-config@${sdkVersion}`,
         }),
         cache: 'force-cache',

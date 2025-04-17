@@ -1,5 +1,89 @@
 # @khulnasoft/blob
 
+## 1.0.0
+
+### Major Changes
+
+- 00dfe23: Khulnasoft Blob is now GA! To celebrate this we're releasing the `1.0.0` version of the Khulnasoft Blob SDK which includes multiple changes and improvements.
+
+  Changes:
+
+  - `addRandomSuffix` is now false by default
+  - Blobs are cached for one month, configurable and with a lower limit of 1 min. Which means you cannot configure the blob cache to be less than 1 minute.
+  - Random suffixes are now also added to the `pathname` of blob responses and `content-disposition` header.
+  - Overwriting blobs now requires to use `allowOverwrite: true`. Example:
+
+  ```js
+  await put('file.png', file, { access: 'public' });
+
+  await put('file.png', file, { access: 'public' }); // This will throw
+
+  put('file.png', file, { access: 'public', allowOverwrite: true }); // This will work
+  ```
+
+  How to upgrade:
+
+  - If you're using random suffixes by default, then add `addRandomSuffix: true` to `put` and `onBeforeGenerateToken` options.
+  - If you're overwriting blobs, then add `allowOverwrite: true` to `put` and `onBeforeGenerateToken` options.
+  - If you're using a cache-control of less than one minute, we recommend using a Khulnasoft Function instead of a Blob. As Khulnasoft Blob is primarily designed for caching content for a longer time.
+  - If you're displaying the `pathname` field of Blob responses in a UI, and using random suffixes, make sure you adpat the UI to show the longer `pathname`.
+
+## 0.27.3
+
+### Patch Changes
+
+- f88d80b: Fix documentation links in README and types, no functional changes
+
+## 0.27.2
+
+### Patch Changes
+
+- 54ce5f8: Allow all special characters to be used as pathname.
+  You can now use all the characters you want in pathname even the ones that have
+  special meaning in urls like `%!'()@{}[]#` and it will work as expected.
+
+## 0.27.1
+
+### Patch Changes
+
+- 0c98feb: fix(blob): allow client uploads in web workers
+
+  Before this change, we had guards so client uploads could only be used in
+  browser environments, this prevented customers to use Khulnasoft Blob in Web
+  Workers, sometimes React Native or in general anywhere window is not really what
+  we think it is.
+
+## 0.27.0
+
+### Minor Changes
+
+- 7872e61: contentType default is now 'application/octet-stream' instead of `undefined`
+
+## 0.26.0
+
+### Minor Changes
+
+- c3afec3: Add onUploadProgress feature to put/upload
+
+  You can now track the upload progress in Node.js and all major browsers when
+  using put/upload in multipart, non-multipart and client upload modes. Basically
+  anywhere in our API you can upload a file, then you can follow the upload
+  progress.
+
+  Here's a basic usage example:
+
+  ```
+  const blob = await put('big-file.pdf', file, {
+    access: 'public',
+    onUploadProgress(event) {
+      console.log(event.loaded, event.total, event.percentage);
+    }
+  });
+  ```
+
+  Fixes #543
+  Fixes #642
+
 ## 0.25.1
 
 ### Patch Changes
@@ -67,7 +151,7 @@
   ```ts
   const abortController = new AbortController();
 
-  vercelBlob
+  khulnasoftBlob
     .put('canceled.txt', 'test', {
       access: 'public',
       abortSignal: abortController.signal,
@@ -123,26 +207,26 @@
   Use `createMultipartUpload`, `uploadPart` and `completeMultipartUpload` to manage the upload.
 
   ```ts
-  const { key, uploadId } = await vercelBlob.createMultipartUpload(
+  const { key, uploadId } = await khulnasoftBlob.createMultipartUpload(
     'big-file.txt',
     { access: 'public' },
   );
 
-  const part1 = await vercelBlob.uploadPart(fullPath, 'first part', {
+  const part1 = await khulnasoftBlob.uploadPart(fullPath, 'first part', {
     access: 'public',
     key,
     uploadId,
     partNumber: 1,
   });
 
-  const part2 = await vercelBlob.uploadPart(fullPath, 'second part', {
+  const part2 = await khulnasoftBlob.uploadPart(fullPath, 'second part', {
     access: 'public',
     key,
     uploadId,
     partNumber: 2,
   });
 
-  const blob = await vercelBlob.completeMultipartUpload(
+  const blob = await khulnasoftBlob.completeMultipartUpload(
     fullPath,
     [part1, part2],
     {
@@ -158,9 +242,12 @@
   For multipart methods, since some of the data remains consistent (uploadId, key), you can make use of the `createMultipartUploader`. This function stores certain data internally, making it possible to offer convinient `put` and `complete` functions.
 
   ```ts
-  const uploader = await vercelBlob.createMultipartUploader('big-file.txt', {
-    access: 'public',
-  });
+  const uploader = await khulnasoftBlob.createMultipartUploader(
+    'big-file.txt',
+    {
+      access: 'public',
+    },
+  );
 
   const part1 = await uploader.uploadPart(1, createReadStream(fullPath));
 
@@ -216,11 +303,11 @@
 
 - 898c14a: feat(blob): Add multipart option to reliably upload medium and large files
 
-  It turns out, uploading large files using Vercel Blob has been a struggle for users.
+  It turns out, uploading large files using Khulnasoft Blob has been a struggle for users.
   Before this change, file uploads were limited to around 200MB for technical reasons.
   Before this change, even uploading a file of 100MB could fail for various reasons (network being one of them).
 
-  To solve this for good, we're introducting a new option to `put` and `upload` calls: `multipart: true`. This new option will make sure your file is uploaded parts by parts to Vercel Blob, and when some parts are failing, we will retry them. This option is available for server and client uploads.
+  To solve this for good, we're introducting a new option to `put` and `upload` calls: `multipart: true`. This new option will make sure your file is uploaded parts by parts to Khulnasoft Blob, and when some parts are failing, we will retry them. This option is available for server and client uploads.
 
   Usage:
 
@@ -245,7 +332,7 @@
   ```ts
   import { createReadStream } from 'node:fs';
 
-  const blob = await vercelBlob.put(
+  const blob = await khulnasoftBlob.put(
     'elon.mp4',
     // this works 👍, it will gradually read the file from the system and upload it
     createReadStream('/users/Elon/me.mp4'),
@@ -258,7 +345,7 @@
     'https://example-files.online-convert.com/video/mp4/example_big.mp4',
   );
 
-  const blob = await vercelBlob.put(
+  const blob = await khulnasoftBlob.put(
     'example_big.mp4',
     // this works too 👍, it will gradually read the file from internet and upload it
     response.body,
@@ -274,7 +361,7 @@
   Now the the SDK validates if the operation is a folder creation by checking if the pathname ends with a trailling slash.
 
   ```ts
-  const blob = await vercelBlob.put('folder/', {
+  const blob = await khulnasoftBlob.put('folder/', {
     access: 'public',
     addRandomSuffix: false,
   });
@@ -307,7 +394,7 @@
 
 ### Minor Changes
 
-- d57df99: Adds a new `mode: folded | expanded (default)` parameter to the list command options. When you pass `folded` to `mode`, then we automatically fold all files belonging to the same folder into a single folder entry. This allows you to build file browsers using the Vercel Blob API.
+- d57df99: Adds a new `mode: folded | expanded (default)` parameter to the list command options. When you pass `folded` to `mode`, then we automatically fold all files belonging to the same folder into a single folder entry. This allows you to build file browsers using the Khulnasoft Blob API.
 
 ## 0.14.1
 
@@ -351,7 +438,7 @@
 
 ### Patch Changes
 
-- c0fe4e7: vercelBlob.head() now sends a `cacheControl` property
+- c0fe4e7: khulnasoftBlob.head() now sends a `cacheControl` property
 
 ## 0.12.2
 
@@ -371,7 +458,7 @@
 
 - 8251462: This release introduces BREAKING CHANGES. Mostly, we've separated client and server needs better. While ensuring we only export what we currently think is useful to you.
 
-  We have a completely new documentation about client (browser) uploads: https://vercel.com/docs/storage/vercel-blob/quickstart#client-uploads.
+  We have a completely new documentation about client (browser) uploads: https://khulnasoft.com/docs/khulnasoft-blob/client-upload.
 
   We've moved and renamed client-related utilities, including the ones to generate client tokens, to a separate entry file: `@khulnasoft/blob/client`. Use it this way:
 
@@ -414,14 +501,14 @@
 ### Minor Changes
 
 - e273673: BREAKING CHANGE: Some methods responses and types have been updated following a
-  migration Vercel did to make Vercel Blob more robust and closer to the S3 API.
+  migration Khulnasoft did to make Khulnasoft Blob more robust and closer to the S3 API.
 
   Namely:
 
-  - the urls generated by Vercel Blob have moved from:
-    `public.blob.vercel-storage.com/zyzoioy8txfs14xe/somefile-NoOVGDVcqSPc7VYCUAGnTzLTG2qEM2.txt`
+  - the urls generated by Khulnasoft Blob have moved from:
+    `public.blob.khulnasoft-storage.com/zyzoioy8txfs14xe/somefile-NoOVGDVcqSPc7VYCUAGnTzLTG2qEM2.txt`
     to
-    `zyzoioy8txfs14xe.blob.vercel-storage.com/somefile-NoOVGDVcqSPc7VYCUAGnTzLTG2qEM2.txt`
+    `zyzoioy8txfs14xe.blob.khulnasoft-storage.com/somefile-NoOVGDVcqSPc7VYCUAGnTzLTG2qEM2.txt`
     This change has been done transparently: all previous blob urls are
     redirected to the new domain.
   - `.put()` no more sends back size and uploadedAt, use .head() to get this
@@ -506,7 +593,7 @@
 
 ### Patch Changes
 
-- fix vercelBlob.del to send back a single object or array when relevant to input
+- fix khulnasoftBlob.del to send back a single object or array when relevant to input
 
 ## 0.6.0
 

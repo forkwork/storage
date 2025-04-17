@@ -45,7 +45,7 @@
 
 ### Minor Changes
 
-- f70264e: Correct VercelPostgresDialect to return an adapter that reports that transactions are _not_ supported
+- f70264e: Correct KhulnasoftPostgresDialect to return an adapter that reports that transactions are _not_ supported
 
 ## 0.6.0
 

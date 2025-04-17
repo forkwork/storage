@@ -9,7 +9,12 @@ import type { CommonCreateBlobOptions } from './helpers';
 import { createCreateMultipartUploaderMethod } from './multipart/create-uploader';
 
 // expose generic BlobError and download url util
-export { BlobError, getDownloadUrl } from './helpers';
+export {
+  BlobError,
+  getDownloadUrl,
+  type OnUploadProgressCallback,
+  type UploadProgressEvent,
+} from './helpers';
 
 // expose api BlobErrors
 export {
@@ -27,35 +32,40 @@ export {
   BlobFileTooLargeError,
 } from './api';
 
-// vercelBlob.put()
+// khulnasoftBlob.put()
 
 export type { PutBlobResult } from './put-helpers';
 export type { PutCommandOptions };
 
 /**
  * Uploads a blob into your store from your server.
- * Detailed documentation can be found here: https://vercel.com/docs/storage/vercel-blob/using-blob-sdk#upload-a-blob
+ * Detailed documentation can be found here: https://khulnasoft.com/docs/khulnasoft-blob/using-blob-sdk#upload-a-blob
  *
- * If you want to upload from the browser directly, check out the documentation forAclient uploads: https://vercel.com/docs/storage/vercel-blob/using-blob-sdk#client-uploads
+ * If you want to upload from the browser directly, check out the documentation forAclient uploads: https://khulnasoft.com/docs/khulnasoft-blob/using-blob-sdk#client-uploads
  *
- * @param pathname - The pathname to upload the blob to, including the extension. This will influence the url of your blob like https://$storeId.public.blob.vercel-storage.com/$pathname.
- * @param body - The content of your blob, can be a: string, File, Blob, Buffer or Stream. We support everything fetch supports: https://developer.mozilla.org/en-US/docs/Web/API/RequestInit#body.
+ * @param pathname - The pathname to upload the blob to, including the extension. This will influence the url of your blob like https://$storeId.public.blob.khulnasoft-storage.com/$pathname.
+ * @param body - The content of your blob, can be a: string, File, Blob, Buffer or Stream. We support almost everything fetch supports: https://developer.mozilla.org/en-US/docs/Web/API/RequestInit#body.
  * @param options - Additional options like `token` or `contentType`.
  */
 export const put = createPutMethod<PutCommandOptions>({
-  allowedOptions: ['cacheControlMaxAge', 'addRandomSuffix', 'contentType'],
+  allowedOptions: [
+    'cacheControlMaxAge',
+    'addRandomSuffix',
+    'allowOverwrite',
+    'contentType',
+  ],
 });
 
-//  vercelBlob.del()
+//  khulnasoftBlob.del()
 
 export { del } from './del';
 
-// vercelBlob.head()
+// khulnasoftBlob.head()
 
 export type { HeadBlobResult } from './head';
 export { head } from './head';
 
-// vercelBlob.list()
+// khulnasoftBlob.list()
 
 export type {
   ListBlobResultBlob,
@@ -65,35 +75,55 @@ export type {
 } from './list';
 export { list } from './list';
 
-// vercelBlob.copy()
+// khulnasoftBlob.copy()
 
 export type { CopyBlobResult, CopyCommandOptions } from './copy';
 export { copy } from './copy';
 
-// vercelBlob. createMultipartUpload()
-// vercelBlob. uploadPart()
-// vercelBlob. completeMultipartUpload()
-// vercelBlob. createMultipartUploaded()
+// khulnasoftBlob. createMultipartUpload()
+// khulnasoftBlob. uploadPart()
+// khulnasoftBlob. completeMultipartUpload()
+// khulnasoftBlob. createMultipartUploader()
 
 export const createMultipartUpload =
   createCreateMultipartUploadMethod<CommonCreateBlobOptions>({
-    allowedOptions: ['cacheControlMaxAge', 'addRandomSuffix', 'contentType'],
+    allowedOptions: [
+      'cacheControlMaxAge',
+      'addRandomSuffix',
+      'allowOverwrite',
+      'contentType',
+    ],
   });
 
 export const createMultipartUploader =
   createCreateMultipartUploaderMethod<CommonCreateBlobOptions>({
-    allowedOptions: ['cacheControlMaxAge', 'addRandomSuffix', 'contentType'],
+    allowedOptions: [
+      'cacheControlMaxAge',
+      'addRandomSuffix',
+      'allowOverwrite',
+      'contentType',
+    ],
   });
 
 export type { UploadPartCommandOptions };
 export const uploadPart = createUploadPartMethod<UploadPartCommandOptions>({
-  allowedOptions: ['cacheControlMaxAge', 'addRandomSuffix', 'contentType'],
+  allowedOptions: [
+    'cacheControlMaxAge',
+    'addRandomSuffix',
+    'allowOverwrite',
+    'contentType',
+  ],
 });
 
 export type { CompleteMultipartUploadCommandOptions };
 export const completeMultipartUpload =
   createCompleteMultipartUploadMethod<CompleteMultipartUploadCommandOptions>({
-    allowedOptions: ['cacheControlMaxAge', 'addRandomSuffix', 'contentType'],
+    allowedOptions: [
+      'cacheControlMaxAge',
+      'addRandomSuffix',
+      'allowOverwrite',
+      'contentType',
+    ],
   });
 
 export type { Part, PartInput } from './multipart/helpers';

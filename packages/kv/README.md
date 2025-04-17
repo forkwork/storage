@@ -1,6 +1,10 @@
 # @khulnasoft/kv
 
-A client that works with Vercel KV.
+<!-- prettier-ignore -->
+> [!CAUTION]
+> **`@khulnasoft/kv` has moved to [the `@upstash/redis` package from Upstash](https://github.com/upstash/redis-js).** This retains the same first-party billing and integration into Khulnasoft, with the added ability to open your Redis stores directly in Upstash.
+
+A client that works with Khulnasoft KV.
 
 ## Install
 
@@ -59,7 +63,7 @@ By default `@khulnasoft/kv` reads the `KV_REST_API_URL` and `KV_REST_API_TOKEN` 
 import { createClient } from '@khulnasoft/kv';
 
 const kv = createClient({
-  url: 'https://<hostname>.redis.vercel-storage.com',
+  url: 'https://<hostname>.redis.khulnasoft-storage.com',
   token: '<token>',
 });
 
@@ -87,7 +91,7 @@ console.log(await customKvClient.get('object')); // '{"hello":"world"}'
 
 ## Docs
 
-See the [documentation](https://www.vercel.com/docs/storage/vercel-kv) for details.
+See the [documentation](https://www.khulnasoft.com/docs/storage/khulnasoft-kv) for details.
 
 ## A note for Vite users
 
@@ -126,7 +130,7 @@ import { createClient } from '@khulnasoft/kv';
 + import { KV_REST_API_URL, KV_REST_API_TOKEN } from '$env/static/private';
 
 const kv = createClient({
--  url: 'https://<hostname>.redis.vercel-storage.com',
+-  url: 'https://<hostname>.redis.khulnasoft-storage.com',
 -  token: '<token>',
 +  url: KV_REST_API_URL,
 +  token: KV_REST_API_TOKEN,
@@ -139,7 +143,7 @@ await kv.set('key', 'value');
 
 ### Does the `@khulnasoft/kv` package support [Redis Streams](https://redis.io/docs/data-types/streams/)?
 
-No, the `@khulnasoft/kv` package does not support Redis Streams. To use Redis Streams with Vercel KV, you must connect directly to the database server via packacges like [`io-redis`](https://github.com/redis/ioredis) or [`node-redis`](https://github.com/redis/node-redis).
+No, the `@khulnasoft/kv` package does not support Redis Streams. To use Redis Streams with Khulnasoft KV, you must connect directly to the database server via packacges like [`io-redis`](https://github.com/redis/ioredis) or [`node-redis`](https://github.com/redis/node-redis).
 
 ```js
 import { createClient } from 'redis';

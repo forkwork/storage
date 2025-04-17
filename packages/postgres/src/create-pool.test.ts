@@ -5,7 +5,7 @@ import {
   MOCKED_POOLED_CONNECTION_STRING,
 } from './mocks';
 import { createPool } from './create-pool';
-import { VercelPostgresError } from './error';
+import { KhulnasoftPostgresError } from './error';
 
 jest.mock('@neondatabase/serverless', () => {
   return {
@@ -66,23 +66,23 @@ describe('createPool', () => {
     );
   });
 
-  it('throws `VercelPostgresError` if no env var or connection string', () => {
+  it('throws `KhulnasoftPostgresError` if no env var or connection string', () => {
     process.env.POSTGRES_URL_NON_POOLING = undefined;
     process.env.POSTGRES_URL = undefined;
-    expect(createPool).toThrow(VercelPostgresError);
+    expect(createPool).toThrow(KhulnasoftPostgresError);
     expect(createPool).toThrow('missing_connection_string');
   });
 
   it('throws error if provided with direct connection string', () => {
     const bad = (): Pool =>
       createPool({ connectionString: MOCKED_DIRECT_CONNECTION_STRING });
-    expect(bad).toThrow(VercelPostgresError);
+    expect(bad).toThrow(KhulnasoftPostgresError);
     expect(bad).toThrow('invalid_connection_string');
   });
 
   it('does not throw error if provided with local connection string', () => {
     const good = (): Pool =>
       createPool({ connectionString: MOCKED_LOCALHOST_CONNECTION_STRING });
-    expect(good).not.toThrow(VercelPostgresError);
+    expect(good).not.toThrow(KhulnasoftPostgresError);
   });
 });

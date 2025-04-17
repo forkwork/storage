@@ -77,7 +77,7 @@
 
 ### Patch Changes
 
-- 52ce540: Before this release, when using our default pooling client (`import { sql } from '@vercel/storage'`), and deploying on Vercel Edge Functions,
+- 52ce540: Before this release, when using our default pooling client (`import { sql } from '@khulnasoft/storage'`), and deploying on Khulnasoft Edge Functions,
   then your Edge Functions would timeout after 11 requests.
 
   Full explanation: we set node-postgres Pool `maxUses` parameter to `1` in Edge Function, because clients can't be reused between requests in this serverless context.
@@ -138,7 +138,7 @@
 
 ### Patch Changes
 
-- 6445b6d: Make VercelClients in VercelPool
+- 6445b6d: Make KhulnasoftClients in KhulnasoftPool
 - e1d2446: fix: Lockfile...?
 - 10c8d3a: Explicit depend on ws
 - 40ca953: fix: Add logging when overriding user config in edge environments
@@ -160,7 +160,7 @@
 
 ### Patch Changes
 
-- 6445b6d: Make VercelClients in VercelPool
+- 6445b6d: Make KhulnasoftClients in KhulnasoftPool
 
 ## 0.1.0-canary.28
 

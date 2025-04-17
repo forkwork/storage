@@ -42,9 +42,11 @@ export async function createMultipartUpload(
 ): Promise<CreateMultipartUploadApiResponse> {
   debug('mpu: create', 'pathname:', pathname);
 
+  const params = new URLSearchParams({ pathname });
+
   try {
     const response = await requestApi<CreateMultipartUploadApiResponse>(
-      `/mpu/${pathname}`,
+      `/mpu?${params.toString()}`,
       {
         method: 'POST',
         headers: {
@@ -65,8 +67,8 @@ export async function createMultipartUpload(
       (error.message === 'Failed to fetch' || error.message === 'fetch failed')
     ) {
       throw new BlobServiceNotAvailable();
-    } else {
-      throw error;
     }
+
+    throw error;
   }
 }

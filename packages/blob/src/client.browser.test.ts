@@ -13,7 +13,7 @@ describe('client', () => {
 
   beforeEach(() => {
     process.env.BLOB_READ_WRITE_TOKEN =
-      'vercel_blob_rw_12345fakeStoreId_30FakeRandomCharacters12345678';
+      'khulnasoft_blob_rw_12345fakeStoreId_30FakeRandomCharacters12345678';
 
     jest.useFakeTimers({ advanceTimers: true });
 
@@ -41,7 +41,7 @@ describe('client', () => {
             json: () =>
               Promise.resolve({
                 type: 'blob.generate-client-token',
-                clientToken: 'vercel_blob_client_fake_123',
+                clientToken: 'khulnasoft_blob_client_fake_123',
               }),
           })
           .mockResolvedValueOnce({
@@ -49,8 +49,8 @@ describe('client', () => {
             ok: true,
             json: () =>
               Promise.resolve({
-                url: `https://storeId.public.blob.vercel-storage.com/superfoo.txt`,
-                downloadUrl: `https://storeId.public.blob.vercel-storage.com/superfoo.txt?download=1`,
+                url: `https://storeId.public.blob.khulnasoft-storage.com/superfoo.txt`,
+                downloadUrl: `https://storeId.public.blob.khulnasoft-storage.com/superfoo.txt?download=1`,
                 pathname: 'foo.txt',
                 contentType: 'text/plain',
                 contentDisposition: 'attachment; filename="foo.txt"',
@@ -67,9 +67,9 @@ describe('client', () => {
       {
         "contentDisposition": "attachment; filename="foo.txt"",
         "contentType": "text/plain",
-        "downloadUrl": "https://storeId.public.blob.vercel-storage.com/superfoo.txt?download=1",
+        "downloadUrl": "https://storeId.public.blob.khulnasoft-storage.com/superfoo.txt?download=1",
         "pathname": "foo.txt",
-        "url": "https://storeId.public.blob.vercel-storage.com/superfoo.txt",
+        "url": "https://storeId.public.blob.khulnasoft-storage.com/superfoo.txt",
       }
     `);
 
@@ -85,15 +85,14 @@ describe('client', () => {
       );
       expect(fetchMock).toHaveBeenNthCalledWith(
         2,
-        'https://blob.vercel-storage.com/foo.txt',
+        'https://blob.khulnasoft-storage.com/?pathname=foo.txt',
         {
           body: 'Test file data',
-          duplex: 'half',
           headers: {
-            authorization: 'Bearer vercel_blob_client_fake_123',
+            authorization: 'Bearer khulnasoft_blob_client_fake_123',
             'x-api-blob-request-attempt': '0',
             'x-api-blob-request-id': `fake:${Date.now()}:${requestId}`,
-            'x-api-version': '7',
+            'x-api-version': '10',
           },
           method: 'PUT',
         },
@@ -104,7 +103,7 @@ describe('client', () => {
   describe('multipart upload', () => {
     beforeEach(() => {
       process.env.BLOB_READ_WRITE_TOKEN =
-        'vercel_blob_rw_12345fakeStoreId_30FakeRandomCharacters12345678';
+        'khulnasoft_blob_rw_12345fakeStoreId_30FakeRandomCharacters12345678';
 
       jest.resetAllMocks();
       jest.restoreAllMocks();
@@ -142,7 +141,7 @@ describe('client', () => {
             ok: true,
             json: () =>
               Promise.resolve({
-                url: `https://storeId.public.blob.vercel-storage.com/foo.txt`,
+                url: `https://storeId.public.blob.khulnasoft-storage.com/foo.txt`,
                 pathname: 'foo.txt',
                 contentType: 'text/plain',
                 contentDisposition: 'attachment; filename="foo.txt"',
@@ -151,7 +150,7 @@ describe('client', () => {
       );
 
       const pathname = 'foo.txt';
-      const token = 'vercel_blob_client_fake_token_for_test';
+      const token = 'khulnasoft_blob_client_fake_token_for_test';
 
       const { uploadId, key } = await createMultipartUpload(pathname, {
         access: 'public',
@@ -195,20 +194,20 @@ describe('client', () => {
         contentDisposition: 'attachment; filename="foo.txt"',
         contentType: 'text/plain',
         pathname: 'foo.txt',
-        url: 'https://storeId.public.blob.vercel-storage.com/foo.txt',
+        url: 'https://storeId.public.blob.khulnasoft-storage.com/foo.txt',
       });
 
       expect(fetchMock).toHaveBeenCalledTimes(4);
 
       expect(fetchMock).toHaveBeenNthCalledWith(
         1,
-        'https://blob.vercel-storage.com/mpu/foo.txt',
+        'https://blob.khulnasoft-storage.com/mpu?pathname=foo.txt',
         {
           headers: {
-            authorization: 'Bearer vercel_blob_client_fake_token_for_test',
+            authorization: 'Bearer khulnasoft_blob_client_fake_token_for_test',
             'x-api-blob-request-attempt': '0',
             'x-api-blob-request-id': `fake:${Date.now()}:${requestId}`,
-            'x-api-version': '7',
+            'x-api-version': '10',
             'x-mpu-action': 'create',
           },
           method: 'POST',
@@ -218,47 +217,45 @@ describe('client', () => {
       const internalAbortSignal = new AbortController().signal;
       expect(fetchMock).toHaveBeenNthCalledWith(
         2,
-        'https://blob.vercel-storage.com/mpu/foo.txt',
+        'https://blob.khulnasoft-storage.com/mpu?pathname=foo.txt',
         {
           body: 'data1',
           headers: {
-            authorization: 'Bearer vercel_blob_client_fake_token_for_test',
+            authorization: 'Bearer khulnasoft_blob_client_fake_token_for_test',
             'x-api-blob-request-attempt': '0',
             'x-api-blob-request-id': `fake:${Date.now()}:${requestId}`,
-            'x-api-version': '7',
+            'x-api-version': '10',
             'x-mpu-action': 'upload',
             'x-mpu-key': 'key',
             'x-mpu-upload-id': 'uploadId',
             'x-mpu-part-number': '1',
           },
           method: 'POST',
-          duplex: 'half',
           signal: internalAbortSignal,
         },
       );
       expect(fetchMock).toHaveBeenNthCalledWith(
         3,
-        'https://blob.vercel-storage.com/mpu/foo.txt',
+        'https://blob.khulnasoft-storage.com/mpu?pathname=foo.txt',
         {
           body: 'data2',
           headers: {
-            authorization: 'Bearer vercel_blob_client_fake_token_for_test',
+            authorization: 'Bearer khulnasoft_blob_client_fake_token_for_test',
             'x-api-blob-request-attempt': '0',
             'x-api-blob-request-id': `fake:${Date.now()}:${requestId}`,
-            'x-api-version': '7',
+            'x-api-version': '10',
             'x-mpu-action': 'upload',
             'x-mpu-key': 'key',
             'x-mpu-upload-id': 'uploadId',
             'x-mpu-part-number': '2',
           },
           method: 'POST',
-          duplex: 'half',
           signal: internalAbortSignal,
         },
       );
       expect(fetchMock).toHaveBeenNthCalledWith(
         4,
-        'https://blob.vercel-storage.com/mpu/foo.txt',
+        'https://blob.khulnasoft-storage.com/mpu?pathname=foo.txt',
         {
           body: JSON.stringify([
             { etag: 'etag1', partNumber: 1 },
@@ -266,10 +263,10 @@ describe('client', () => {
           ]),
           headers: {
             'content-type': 'application/json',
-            authorization: 'Bearer vercel_blob_client_fake_token_for_test',
+            authorization: 'Bearer khulnasoft_blob_client_fake_token_for_test',
             'x-api-blob-request-attempt': '0',
             'x-api-blob-request-id': `fake:${Date.now()}:${requestId}`,
-            'x-api-version': '7',
+            'x-api-version': '10',
             'x-mpu-action': 'complete',
             'x-mpu-key': 'key',
             'x-mpu-upload-id': 'uploadId',
@@ -304,7 +301,7 @@ describe('client', () => {
             ok: true,
             json: () =>
               Promise.resolve({
-                url: `https://storeId.public.blob.vercel-storage.com/foo.txt`,
+                url: `https://storeId.public.blob.khulnasoft-storage.com/foo.txt`,
                 pathname: 'foo.txt',
                 contentType: 'text/plain',
                 contentDisposition: 'attachment; filename="foo.txt"',
@@ -313,7 +310,7 @@ describe('client', () => {
       );
 
       const pathname = 'foo.txt';
-      const token = 'vercel_blob_client_fake_token_for_test';
+      const token = 'khulnasoft_blob_client_fake_token_for_test';
 
       const uploader = await createMultipartUploader(pathname, {
         access: 'public',
@@ -339,20 +336,20 @@ describe('client', () => {
         contentDisposition: 'attachment; filename="foo.txt"',
         contentType: 'text/plain',
         pathname: 'foo.txt',
-        url: 'https://storeId.public.blob.vercel-storage.com/foo.txt',
+        url: 'https://storeId.public.blob.khulnasoft-storage.com/foo.txt',
       });
 
       expect(fetchMock).toHaveBeenCalledTimes(4);
 
       expect(fetchMock).toHaveBeenNthCalledWith(
         1,
-        'https://blob.vercel-storage.com/mpu/foo.txt',
+        'https://blob.khulnasoft-storage.com/mpu?pathname=foo.txt',
         {
           headers: {
-            authorization: 'Bearer vercel_blob_client_fake_token_for_test',
+            authorization: 'Bearer khulnasoft_blob_client_fake_token_for_test',
             'x-api-blob-request-attempt': '0',
             'x-api-blob-request-id': `fake:${Date.now()}:${requestId}`,
-            'x-api-version': '7',
+            'x-api-version': '10',
             'x-mpu-action': 'create',
           },
           method: 'POST',
@@ -362,47 +359,45 @@ describe('client', () => {
       const internalAbortSignal = new AbortController().signal;
       expect(fetchMock).toHaveBeenNthCalledWith(
         2,
-        'https://blob.vercel-storage.com/mpu/foo.txt',
+        'https://blob.khulnasoft-storage.com/mpu?pathname=foo.txt',
         {
           body: 'data1',
           headers: {
-            authorization: 'Bearer vercel_blob_client_fake_token_for_test',
+            authorization: 'Bearer khulnasoft_blob_client_fake_token_for_test',
             'x-api-blob-request-attempt': '0',
             'x-api-blob-request-id': `fake:${Date.now()}:${requestId}`,
-            'x-api-version': '7',
+            'x-api-version': '10',
             'x-mpu-action': 'upload',
             'x-mpu-key': 'key',
             'x-mpu-upload-id': 'uploadId',
             'x-mpu-part-number': '1',
           },
           method: 'POST',
-          duplex: 'half',
           signal: internalAbortSignal,
         },
       );
       expect(fetchMock).toHaveBeenNthCalledWith(
         3,
-        'https://blob.vercel-storage.com/mpu/foo.txt',
+        'https://blob.khulnasoft-storage.com/mpu?pathname=foo.txt',
         {
           body: 'data2',
           headers: {
-            authorization: 'Bearer vercel_blob_client_fake_token_for_test',
+            authorization: 'Bearer khulnasoft_blob_client_fake_token_for_test',
             'x-api-blob-request-attempt': '0',
             'x-api-blob-request-id': `fake:${Date.now()}:${requestId}`,
-            'x-api-version': '7',
+            'x-api-version': '10',
             'x-mpu-action': 'upload',
             'x-mpu-key': 'key',
             'x-mpu-upload-id': 'uploadId',
             'x-mpu-part-number': '2',
           },
           method: 'POST',
-          duplex: 'half',
           signal: internalAbortSignal,
         },
       );
       expect(fetchMock).toHaveBeenNthCalledWith(
         4,
-        'https://blob.vercel-storage.com/mpu/foo.txt',
+        'https://blob.khulnasoft-storage.com/mpu?pathname=foo.txt',
         {
           body: JSON.stringify([
             { etag: 'etag1', partNumber: 1 },
@@ -410,10 +405,10 @@ describe('client', () => {
           ]),
           headers: {
             'content-type': 'application/json',
-            authorization: 'Bearer vercel_blob_client_fake_token_for_test',
+            authorization: 'Bearer khulnasoft_blob_client_fake_token_for_test',
             'x-api-blob-request-attempt': '0',
             'x-api-blob-request-id': `fake:${Date.now()}:${requestId}`,
-            'x-api-version': '7',
+            'x-api-version': '10',
             'x-mpu-action': 'complete',
             'x-mpu-key': 'key',
             'x-mpu-upload-id': 'uploadId',
@@ -436,7 +431,7 @@ describe('client', () => {
 
       const uploader = await createMultipartUploader('foo.txt', {
         access: 'public',
-        token: 'vercel_blob_client_fake_token_for_test',
+        token: 'khulnasoft_blob_client_fake_token_for_test',
       });
 
       await expect(() =>
@@ -444,7 +439,7 @@ describe('client', () => {
         uploader.uploadPart(1, { file: 'value' }),
       ).rejects.toThrow(
         new Error(
-          "Vercel Blob: Body must be a string, buffer or stream. You sent a plain JavaScript object, double check what you're trying to upload.",
+          "Khulnasoft Blob: Body must be a string, buffer or stream. You sent a plain JavaScript object, double check what you're trying to upload.",
         ),
       );
     });
@@ -502,7 +497,7 @@ describe('client', () => {
               key: 'foo.txt',
               uploadId: '1',
               partNumber: 1,
-              token: 'vercel_blob_client_fake_123',
+              token: 'khulnasoft_blob_client_fake_123',
             },
           ),
       ],
@@ -511,7 +506,7 @@ describe('client', () => {
     it.each(testCases)('on %s', async (_, operation) => {
       await expect(operation).rejects.toThrow(
         new Error(
-          "Vercel Blob: Body must be a string, buffer or stream. You sent a plain JavaScript object, double check what you're trying to upload.",
+          "Khulnasoft Blob: Body must be a string, buffer or stream. You sent a plain JavaScript object, double check what you're trying to upload.",
         ),
       );
     });
