@@ -23,7 +23,7 @@ export default async function handleBody(
     return;
   }
 
-  // Note: this will stream the file to Vercel's Blob Store
+  // Note: this will stream the file to Khulnasoft's Blob Store
   const blob = await khulnasoftBlob.put(pathname, request.body as string, {
     access: 'public',
     multipart,
