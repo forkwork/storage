@@ -10,6 +10,7 @@ export const getServerSideProps: GetServerSideProps = async (req) => {
 
   const blob = await khulnasoftBlob.put(`${prefix}/g.jpeg`, imageFile, {
     access: 'public',
+    addRandomSuffix: true,
   });
 
   return {

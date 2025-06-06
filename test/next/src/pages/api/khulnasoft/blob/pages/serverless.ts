@@ -27,6 +27,7 @@ export default async function handleBody(
   const blob = await khulnasoftBlob.put(pathname, request.body as string, {
     access: 'public',
     multipart,
+    addRandomSuffix: true,
   });
 
   response.json(blob);

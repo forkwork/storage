@@ -25,15 +25,8 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.node-version'
-          cache: 'pnpm'
+      - name: Project Setup
+        uses: ./.github/actions/setup
 
       - uses: actions/cache@v4
         id: playwright-cache
@@ -42,20 +35,17 @@ jobs:
             ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
 
-      - name: Install dependencies
-        run: pnpm install
-
-      # This will use the cache for browsers. But it will reinstall system deps, which can't be cached
-      # https://github.com/microsoft/playwright/issues/20603#issuecomment-1416243810
       # Using ./test/next... is mandatory so we are not subject to playwright surprise updates
       - run: ./test/next/node_modules/.bin/playwright install --with-deps
 
-      - name: Run Playwright tests in development mode
+      # Run the default suite of Playwright integration tests.
+      - name: Run Default Integration Tests
         run: pnpm integration-test
         env:
           BLOB_UPLOAD_SECRET: ${{ secrets.BLOB_UPLOAD_SECRET }}
 
-      - name: Run Blob Playwright tests in development mode using the alternative api
+      # Run integration tests specifically for the @khulnasoft/blob package using an alternative API endpoint.
+      - name: Run Blob Integration Tests with Alternative API
         run: pnpm integration-test -- @khulnasoft/blob
         env:
           BLOB_UPLOAD_SECRET: ${{ secrets.BLOB_UPLOAD_SECRET }}
@@ -64,6 +54,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report
+          name: integration-tests-dev-report
           path: test/next/test-results
           retention-days: 30

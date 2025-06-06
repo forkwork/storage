@@ -1,14 +1,48 @@
 import { requestApi } from './api';
 import type { BlobCommandOptions } from './helpers';
 
+/**
+ * Result of the head method containing metadata about a blob.
+ */
 export interface HeadBlobResult {
-  url: string;
-  downloadUrl: string;
+  /**
+   * The size of the blob in bytes.
+   */
   size: number;
+
+  /**
+   * The date when the blob was uploaded.
+   */
   uploadedAt: Date;
+
+  /**
+   * The pathname of the blob within the store.
+   */
   pathname: string;
+
+  /**
+   * The content type of the blob.
+   */
   contentType: string;
+
+  /**
+   * The content disposition header value.
+   */
   contentDisposition: string;
+
+  /**
+   * The URL of the blob.
+   */
+  url: string;
+
+  /**
+   * A URL that will cause browsers to download the file instead of displaying it inline.
+   */
+  downloadUrl: string;
+
+  /**
+   * The cache control header value.
+   */
   cacheControl: string;
 }
 
@@ -20,14 +54,14 @@ interface HeadBlobApiResponse extends Omit<HeadBlobResult, 'uploadedAt'> {
  * Fetches metadata of a blob object.
  * Detailed documentation can be found here: https://khulnasoft.com/docs/khulnasoft-blob/using-blob-sdk#get-blob-metadata
  *
- * @param url - Blob url to lookup.
+ * @param urlOrPathname - Blob url or pathname to lookup.
  * @param options - Additional options for the request.
  */
 export async function head(
-  url: string,
+  urlOrPathname: string,
   options?: BlobCommandOptions,
 ): Promise<HeadBlobResult> {
-  const searchParams = new URLSearchParams({ url });
+  const searchParams = new URLSearchParams({ url: urlOrPathname });
 
   const response = await requestApi<HeadBlobApiResponse>(
     `?${searchParams.toString()}`,

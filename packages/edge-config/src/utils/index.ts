@@ -71,14 +71,14 @@ export const clone = trace(
  * Internal edge config connection strings are those which are native to Khulnasoft.
  *
  * Internal Edge Config Connection Strings look like this:
- * https://edge-config.khulnasoft.com/<edgeConfigId>?token=<token>
+ * https://edge-kv.vercel.app/<edgeConfigId>?token=<token>
  */
 function parseKhulnasoftConnectionStringFromUrl(
   text: string,
 ): Connection | null {
   try {
     const url = new URL(text);
-    if (url.host !== 'edge-config.khulnasoft.com') return null;
+    if (url.host !== 'edge-kv.vercel.app') return null;
     if (url.protocol !== 'https:') return null;
     if (!url.pathname.startsWith('/ecfg')) return null;
 
@@ -90,7 +90,7 @@ function parseKhulnasoftConnectionStringFromUrl(
 
     return {
       type: 'khulnasoft',
-      baseUrl: `https://edge-config.khulnasoft.com/${id}`,
+      baseUrl: `https://edge-kv.vercel.app/${id}`,
       id,
       version: '1',
       token,
@@ -116,7 +116,7 @@ function parseConnectionFromQueryParams(text: string): Connection | null {
 
     return {
       type: 'khulnasoft',
-      baseUrl: `https://edge-config.khulnasoft.com/${id}`,
+      baseUrl: `https://edge-kv.vercel.app/${id}`,
       id,
       version: '1',
       token,
@@ -141,7 +141,7 @@ function parseConnectionFromQueryParams(text: string): Connection | null {
  * msw.
  *
  * To allow interception we need a custom connection string as the
- * edge-config.khulnasoft.com connection string might not always go over
+ * edge-kv.vercel.app connection string might not always go over
  * the network, so msw would not have a chance to intercept.
  */
 /**
@@ -190,7 +190,7 @@ function parseExternalConnectionStringFromUrl(
  * Parse the edgeConfigId and token from an Edge Config Connection String.
  *
  * Edge Config Connection Strings usually look like one of the following:
- *  - https://edge-config.khulnasoft.com/<edgeConfigId>?token=<token>
+ *  - https://edge-kv.vercel.app/<edgeConfigId>?token=<token>
  *  - edge-config:id=<edgeConfigId>&token=<token>
  *
  * @param text - A potential Edge Config Connection String
