@@ -19,19 +19,8 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.node-version'
-          cache: 'pnpm'
-
-      - name: Install Dependencies
-        run: pnpm install
+      - name: Project Setup
+        uses: ./.github/actions/setup
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
@@ -43,3 +32,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN_ELEVATED }}
+
+      - name: Upload Release Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.workflow }}-${{ github.run_id }}-build-artifacts
+          path: dist/
+          retention-days: 90 # Longer retention for release builds

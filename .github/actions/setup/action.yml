@@ -1,0 +1,27 @@
+name: 'Project Setup'
+description: 'Checks out code, sets up pnpm, Node.js, and installs dependencies with caching.'
+
+inputs:
+  node-version:
+    description: 'The Node.js version to use'
+    required: false
+    default: '.node-version' # Use default from file if not provided
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      run: pnpm install
+      shell: bash

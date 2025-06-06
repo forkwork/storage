@@ -6,7 +6,7 @@ import { cache } from './utils/fetch-with-cached-response';
 import { get, has, digest, createClient, getAll } from './index';
 
 const sdkVersion = typeof pkgVersion === 'string' ? pkgVersion : '';
-const baseUrl = 'https://edge-config.khulnasoft.com/ecfg-1';
+const baseUrl = 'https://edge-kv.vercel.app/ecfg-1';
 
 // eslint-disable-next-line jest/require-top-level-describe -- [@khulnasoft/style-guide@5 migration]
 beforeEach(() => {
@@ -32,7 +32,7 @@ describe('default Edge Config', () => {
   describe('test conditions', () => {
     it('should have an env var called EDGE_CONFIG', () => {
       expect(process.env.EDGE_CONFIG).toEqual(
-        'https://edge-config.khulnasoft.com/ecfg-1?token=token-1',
+        'https://edge-kv.vercel.app/ecfg-1?token=token-1',
       );
     });
   });
@@ -630,7 +630,7 @@ describe('createClient', () => {
       // ensure fetch was called with the right options
       expect(fetchMock).toHaveBeenCalledTimes(1);
       expect(fetchMock).toHaveBeenCalledWith(
-        'https://edge-config.khulnasoft.com/ecfg-1/item/foo?version=1',
+        'https://edge-kv.vercel.app/ecfg-1/item/foo?version=1',
         {
           cache: 'force-cache',
           headers: new Headers({

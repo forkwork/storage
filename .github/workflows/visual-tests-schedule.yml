@@ -27,15 +27,8 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.node-version'
-          cache: 'pnpm'
+      - name: Project Setup
+        uses: ./.github/actions/setup
 
       - uses: actions/cache@v4
         id: playwright-cache
@@ -44,15 +37,12 @@ jobs:
             ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
 
-      - name: Install dependencies
-        run: pnpm install
-
       # This will use the cache for browsers. But it will reinstall system deps, which can't be cached
       # https://github.com/microsoft/playwright/issues/20603#issuecomment-1416243810
       # Using ./test/next... is mandatory so we are not subject to playwright surprise updates
       - run: ./test/next/node_modules/.bin/playwright install --with-deps
 
-      - name: Run Playwright tests on https://storage-rho.khulnasoft.app/
+      - name: Run Visual Tests on Khulnasoft App
         run: pnpm integration-test
         env:
           PLAYWRIGHT_TEST_BASE_URL: ${{inputs.PLAYWRIGHT_TEST_BASE_URL || 'https://storage-rho.khulnasoft.app' }}
@@ -83,5 +73,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-snapshot
+          name: visual-tests-schedule-snapshot
           path: test/next/test-results
+          retention-days: 30

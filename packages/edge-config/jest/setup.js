@@ -1,7 +1,6 @@
 require('jest-fetch-mock').enableMocks();
 
-process.env.EDGE_CONFIG =
-  'https://edge-config.khulnasoft.com/ecfg-1?token=token-1';
+process.env.EDGE_CONFIG = 'https://edge-kv.vercel.app/ecfg-1?token=token-1';
 process.env.KHULNASOFT_ENV = 'test';
 
 // Adds a DOMException polyfill

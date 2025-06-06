@@ -17,19 +17,8 @@ jobs:
     name: 'Prettier'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.node-version'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install
+      - name: Project Setup
+        uses: ./.github/actions/setup
 
       - name: Run Prettier check
         run: pnpm prettier-check
@@ -38,19 +27,8 @@ jobs:
     name: 'ESLint'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.node-version'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install
+      - name: Project Setup
+        uses: ./.github/actions/setup
 
       - name: Run ESLint
         run: pnpm run lint
@@ -59,19 +37,8 @@ jobs:
     name: 'TypeScript'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.node-version'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install
+      - name: Project Setup
+        uses: ./.github/actions/setup
 
       - name: Run TypeScript type check
         run: pnpm run type-check
@@ -80,19 +47,8 @@ jobs:
     name: 'publint'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.node-version'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install
+      - name: Project Setup
+        uses: ./.github/actions/setup
 
       - name: Run Publint
         run: pnpm run publint

@@ -51,16 +51,8 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.node-version'
-          cache: 'pnpm'
+      - name: Project Setup
+        uses: ./.github/actions/setup
 
       - name: Add npm auth token to pnpm
         run: pnpm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN_ELEVATED}"
@@ -81,6 +73,13 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.workflow }}-${{ github.sha }}-build-artifacts
+          path: dist/
+          retention-days: 7 # Shorter retention for snapshot builds
 
       - name: Create Snapshot Release
         run: pnpm changeset publish --no-git-tag --tag snapshot

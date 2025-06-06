@@ -4,7 +4,7 @@ import { cache } from './utils/fetch-with-cached-response';
 import { get, has, digest, getAll, createClient } from './index';
 
 const sdkVersion = typeof pkgVersion === 'string' ? pkgVersion : '';
-const baseUrl = 'https://edge-config.khulnasoft.com/ecfg-1';
+const baseUrl = 'https://edge-kv.vercel.app/ecfg-1';
 
 describe('default Edge Config', () => {
   beforeEach(() => {
@@ -15,7 +15,7 @@ describe('default Edge Config', () => {
   describe('test conditions', () => {
     it('should have an env var called EDGE_CONFIG', () => {
       expect(process.env.EDGE_CONFIG).toEqual(
-        'https://edge-config.khulnasoft.com/ecfg-1?token=token-1',
+        'https://edge-kv.vercel.app/ecfg-1?token=token-1',
       );
     });
   });

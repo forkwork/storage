@@ -22,7 +22,16 @@ interface UserTable {
 export interface Database {
   users: UserTable;
 }
-export const db = createKysely<Database>();
+
+// Conditionally create a Kysely instance based on the runtime
+// In a real application, you might want a more robust way to handle this.
+const db =
+  typeof EdgeRuntime !== 'undefined' || process.env.APP_RUNTIME === 'edge' // Check for EdgeRuntime or a custom env var
+    ? createKysely<Database>() // Use pooled connection for Edge
+    : createKysely<Database>({
+        // Use direct connection for Node.js
+        connectionString: process.env.POSTGRES_URL_NON_POOLING,
+      });
 
 export const queryUsers = async (): Promise<
   {
@@ -34,7 +43,7 @@ export const queryUsers = async (): Promise<
   }[]
 > => {
   const timeoutPromise = new Promise<never>((_, reject) =>
-    // eslint-disable-next-line no-promise-executor-return -- [@khulnasoft/style-guide@5 migration]
+    // eslint-disable-next-line no-promise-executor-syntax -- [@khulnasoft/style-guide@5 migration]
     setTimeout(() => {
       reject(new Error('SELECT hung for more than 20 seconds'));
     }, 20000),
