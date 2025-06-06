@@ -29,8 +29,6 @@
   },
   "prettier": "@khulnasoft/style-guide/prettier",
   "devDependencies": {
-    "@changesets/cli": "2.28.1",
-    "@khulnasoft/style-guide": "6.2.0",
     "eslint": "8.56.0",
     "eslint-config-custom": "workspace:*",
     "husky": "9.1.7",
